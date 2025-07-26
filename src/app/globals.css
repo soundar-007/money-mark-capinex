@@ -1,0 +1,63 @@
+/* Import Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+/* Tailwind & PrimeReact */
+
+@import "primereact/resources/themes/lara-light-blue/theme.css";
+@import "primereact/resources/primereact.min.css";
+@import "primeicons/primeicons.css";
+@import "boxicons/css/boxicons.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Variables */
+:root {
+  --font-family: "Inter", sans-serif;
+  --background: #171717;
+  --foreground: #ffffff;
+}
+
+/* Apply Font */
+body,
+.p-component {
+  font-family: var(--font-family);
+  font-weight: 400; /* Default weight */
+  letter-spacing: normal;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: inherit; /* Match background */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.statuscard-shadow {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
+}
+
+.border-r-1 {
+  border-right: 1px solid black;
+}
+.border-b-1 {
+  border-bottom: 1px solid black;
+}
+.border-1 {
+  border: 1px solid black;
+}
+.text-s {
+  font-size: 0.65rem;
+}
