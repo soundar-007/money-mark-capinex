@@ -55,7 +55,7 @@ function SidebarContent({ isExpanded, setVisible }) {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-primary text-white px-4">
+    <div className="min-h-screen flex flex-col bg-primary text-white px-4 overflow-hidden">
       {/* Close Button for Mobile */}
       {isExpanded && isClient && window.innerWidth < 1024 && (
         <div className="lg:hidden flex justify-end p-4">
@@ -70,11 +70,11 @@ function SidebarContent({ isExpanded, setVisible }) {
       {isExpanded && (
         <div className="flex flex-col items-center justify-center py-4">
           <img
-            src="/path-to-logo.png"
+            src="/assets/logo.png"
             alt="CAPINEX Logo"
-            className="h-8 transition-transform duration-300 transform hover:scale-110"
+            className="h-12 transition-transform duration-300 transform hover:scale-110"
           />
-          <p className="text-xs text-gray-400 mt-1">MONEY MARK</p>
+          {/* <p className="text-xs text-gray-400 mt-1">MONEY MARK</p> */}
         </div>
       )}
 
