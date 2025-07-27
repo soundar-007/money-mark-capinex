@@ -61,3 +61,34 @@ body,
 .text-s {
   font-size: 0.65rem;
 }
+
+.p-breadcrumb {
+  /* background: #f2f6f7; */
+  border-radius: 8px;
+  font-size: 1.1rem;
+  padding: 0.65rem 1.2rem;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+}
+
+.p-breadcrumb .p-menuitem-text,
+.p-breadcrumb .p-breadcrumb-home {
+  /* color: #3766e8; */
+  color: rgba(0, 0, 0, 0.712);
+  font-weight: 800;
+  transition: color 0.2s;
+}
+
+/* .p-breadcrumb .p-menuitem-text:hover {
+  color: #173063;
+  text-decoration: underline;
+} */
+
+.p-breadcrumb .p-breadcrumb-chevron {
+  color: #b5b5b5;
+  margin: 0 0.3em;
+}
+
+.p-breadcrumb .p-breadcrumb-last .p-menuitem-text {
+  color: #7b1fa2; /* Purple for active */
+  font-weight: 800;
+}

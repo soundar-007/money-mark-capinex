@@ -21,8 +21,13 @@ function ReusableTable({ columns, data }) {
         </thead>
         <tbody>
           {data.map((item, index) => (
-            <tr className="text-gray-700" key={index}>
-              <td className="px-2 py-1 font-semibold">{index + 1}</td>
+            <tr
+              className={`text-gray-800 ${
+                index % 2 !== 0 ? "bg-gray-300" : ""
+              }`}
+              key={index}
+            >
+              <td className={`px-2 py-3 font-semibold`}>{index + 1}</td>
               {columns.map(({ accessor }, idx) => (
                 <td key={idx} className="px-2 py-1 font-semibold ">
                   {item[accessor]}

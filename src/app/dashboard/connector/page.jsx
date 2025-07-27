@@ -38,9 +38,14 @@ function ConnectorPage() {
           </thead>
           <tbody>
             {dummyData.map((item, index) => (
-              <tr className="text-gray-700" key={index}>
+              <tr
+                className={`text-gray-800 ${
+                  index % 2 !== 0 ? "bg-gray-200" : ""
+                } `}
+                key={index}
+              >
                 <td className="px-2 py-1 font-semibold">{index + 1}</td>
-                <td className="px-2 py-1 uppercase font-semibold">
+                <td className="px-2 py-3 uppercase font-semibold">
                   {item.name}
                 </td>
                 <td className="px-2 py-1 font-semibold ">{item.number}</td>

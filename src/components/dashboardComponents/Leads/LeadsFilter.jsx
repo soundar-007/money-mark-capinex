@@ -77,7 +77,7 @@ function LeadsFilter({
                 ? "underline"
                 : "text-gray-600 hover:bg-gray-100"
             }`}
-            onClick={() => setSelectedDetail(el)}
+            onClick={() => setSelectedStatus(el)}
           >
             {el}
           </div>

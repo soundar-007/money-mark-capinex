@@ -237,8 +237,16 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
     User: [
       { header: "#", key: "id", render: (row) => row.id },
       { header: "Name", key: "name", render: (row) => row.name },
-      { header: "Mobile Number", key: "mobilenumber", render: (row) => row.mobileNumber },
-      { header: "Lead Owner", key: "leadowner", render: (row) => row.leadOwner },
+      {
+        header: "Mobile Number",
+        key: "mobilenumber",
+        render: (row) => row.mobileNumber,
+      },
+      {
+        header: "Lead Owner",
+        key: "leadowner",
+        render: (row) => row.leadOwner,
+      },
       {
         header: "Loan Amount",
         key: "loanAmount",
@@ -282,18 +290,18 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
         render: (row) => `$${row.loanAmount.toLocaleString()}`,
       },
       { header: "Status", key: "status", render: (row) => row.status },
-      {
-        header: "Download",
-        key: "download",
-        render: (row) => (
-          <button
-            className="text-blue-600 hover:text-blue-800"
-            onClick={() => alert(`Download for ${row.name}`)}
-          >
-            Download
-          </button>
-        ),
-      },
+      // {
+      //   header: "Download",
+      //   key: "download",
+      //   render: (row) => (
+      //     <button
+      //       className="text-blue-600 hover:text-blue-800"
+      //       onClick={() => alert(`Download for ${row.name}`)}
+      //     >
+      //       Download
+      //     </button>
+      //   ),
+      // },
     ],
     Watch: [
       { header: "#", key: "id", render: (row) => row.id },
@@ -314,27 +322,26 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
         render: (row) => `$${row.loanAmount.toLocaleString()}`,
       },
       { header: "Status", key: "status", render: (row) => row.status },
-      {
-        header: "Download",
-        key: "download",
-        render: (row) => (
-          <button
-            className="text-blue-600 hover:text-blue-800"
-            onClick={() => alert(`Download for ${row.name}`)}
-          >
-            Download
-          </button>
-        ),
-      },
+      // {
+      //   header: "Download",
+      //   key: "download",
+      //   render: (row) => (
+      //     <button
+      //       className="text-blue-600 hover:text-blue-800"
+      //       onClick={() => alert(`Download for ${row.name}`)}
+      //     >
+      //       Download
+      //     </button>
+      //   ),
+      // },
     ],
   };
-
 
   // Use selectedDetail or default to "Org"
   const columns = columnConfigs[selectedDetail || "Org"];
 
   // Filter data based on selectedStatus, selectedLoan, and searchTerm
-  const filteredData = sampleData
+  const filteredData = sampleData;
   // .filter((row) => {
   //   const statusMatch = selectedStatus ? row.status === selectedStatus : true;
   //   const searchMatch = searchTerm
@@ -345,14 +352,14 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
   //       )
   //     : true;
   //   return statusMatch && searchMatch;
-  // }); 
+  // });
 
-  // const statusColors = { 
-  //   customerDiscussion:{ 
+  // const statusColors = {
+  //   customerDiscussion:{
   //     bg:'bg-blue-200',
   //     text:'text-blue-600'
   //   },
-  //   bankDiscussion:{ 
+  //   bankDiscussion:{
   //     bg:'bg-blue-200',
   //     text:'text-blue-600'
   //   }
@@ -366,40 +373,28 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
             {columns.map((col) => (
               <th
                 key={col.key}
-                className="px-2 py-1 text-left font-bold text-xs"
+                className="px-2 py-1 text-left font-bold text-xs border-b-1"
               >
                 {col.header}
               </th>
             ))}
           </tr>
+          {/* Search/filter row */}
           <tr>
-            <td colSpan={columns.length} className="px-4 py-2 border-b-1">
-              {/* <div className="flex justify-center">
+            <td colSpan={columns.length} className="px-4 ">
+              <div className="flex">
                 <input
                   type="text"
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-1/3 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-1/3 px-2 py-1 border-1 rounded-sm flex-1"
                 />
-              </div> */}
+              </div>
             </td>
           </tr>
         </thead>
-        <tr className="mb-2">
-          <td colSpan={columns.length} className="px-4">
-            <div className="flex">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-1/3 px-2 py-1 border-1 rounded-sm flex-1"
-              />
-            </div>
-          </td>
-        </tr>
-        <tbody className="mt-2">
+        <tbody>
           {filteredData.map((row, i) => (
             <tr
               key={row.id}
