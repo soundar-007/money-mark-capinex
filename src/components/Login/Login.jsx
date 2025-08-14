@@ -1,18 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputOtp } from "primereact/inputotp";
 import Image from "next/image";
 import InputFloating from "../InputFloating";
 import Link from "next/link";
+import Otp from "../CustomOtp/Otp";
+import { useRef } from "react";
 export default function Login() {
-  const [pin, setPin] = useState("");
-  console.log(pin)
+  const [pin, setPin] = useState(new Array(4).fill(""));
   const [mobile, setMobile] = useState("");
+  const mobileRef = useRef();
   const handleMobileChange = (value) => {
     const cleaned = value.replace(/\D/g, "").slice(0, 10);
     setMobile(cleaned);
-    console.log(mobile);
   };
+  // useEffect(() => {
+  //   mobileRef.current.focus();
+  // }, []);
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
@@ -34,14 +39,10 @@ export default function Login() {
             label={"Mobile"}
             className=" w-full mb-2"
             value={mobile}
+            // ref={mobileRef}
             onChange={(value) => handleMobileChange(value)}
           />
-          <InputOtp
-            value={pin}
-            onChange={(e) => setPin(e.value)}
-            integerOnly
-            mask
-          />
+          <Otp mask handleOnChange={setPin} />
           <Link
             href={"/dashboard"}
             className="bg-primary rounded-md  w-full text-center text-white p-2"

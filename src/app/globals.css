@@ -55,9 +55,13 @@ body,
 .border-b-1 {
   border-bottom: 1px solid black;
 }
+.border-b-gray {
+  border-bottom: 1px solid rgba(214, 211, 211, 0.536);
+}
 .border-1 {
   border: 1px solid black;
 }
+
 .text-s {
   font-size: 0.65rem;
 }

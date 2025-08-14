@@ -243,7 +243,6 @@ function SidebarContent({ isExpanded, setVisible }) {
 function SidebarItem({ icon, label, isExpanded, href }) {
   const pathname = usePathname();
   const isActive = pathname === href;
-  console.log("path:", pathname, ":href", href);
 
   return (
     <li>
@@ -263,10 +262,16 @@ function SidebarItem({ icon, label, isExpanded, href }) {
 }
 
 function SidebarDropdown({ icon, label, isOpen, toggle, items, isExpanded }) {
+  const pathname = usePathname();
+  const isAnyChildActive = items.some((item) => pathname.startsWith(item.href));
   return (
     <li>
       <div
-        className="p-ripple flex items-center justify-between text-white cursor-pointer hover:text-gray-300 px-3 py-2 "
+        className={`p-ripple flex items-center justify-between text-white cursor-pointer px-3 py-2  ${
+          isAnyChildActive
+            ? "bg-white text-primary font-semibold rounded hover:text-black-150"
+            : "text-white hover:text-gray-600 hover:shadow-sm"
+        } `}
         onClick={toggle}
       >
         <div className="flex items-center space-x-3">
@@ -285,19 +290,24 @@ function SidebarDropdown({ icon, label, isOpen, toggle, items, isExpanded }) {
       {isExpanded && (
         <ul
           className={`list-none pl-6 mt-2 space-y-2 transition-all duration-300 ${
-            isOpen ? "max-h-screen" : "max-h-0 overflow-hidden"
+            isOpen ? "max-h-screen" : "hidden overflow-hidden"
           }`}
         >
-          {items.map((item, index) => (
-            <li key={index}>
-              <Link
-                href={item.href}
-                className="text-white hover:text-gray-300 transition-transform duration-300 transform hover:scale-105"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
+          {items.map((item, index) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <li key={index}>
+                <Link
+                  href={item.href}
+                  className={`text-white hover:text-gray-300 transition-transform duration-300 transform hover:scale-105 ${
+                    isActive ? "font-extrabold" : ""
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </li>
