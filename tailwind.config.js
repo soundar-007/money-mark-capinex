@@ -24,6 +24,9 @@ module.exports = {
           DEFAULT: "#facc15", // Main secondary color (yellow)
           dark: "#ca8a04", // Darker shade of secondary color
         },
+        hover:{
+         input_hover:"#4339F2"
+        },
         gray: {
           100: "#f7fafc",
           200: "#edf2f7",

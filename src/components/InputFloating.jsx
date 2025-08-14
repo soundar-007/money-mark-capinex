@@ -8,6 +8,7 @@ const InputFloating = ({
   type = "text",
   className = "w-full sm:w-1/4",
   placeholder = "",
+  ref = "",
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -26,9 +27,10 @@ const InputFloating = ({
         {label}
       </label>
       <input
+        // ref={ref}
         type={type}
         inputMode="numeric"
-        className={`placeholder-black-150 w-full rounded-md py-3 px-4 focus:outline-none border 
+        className={`placeholder-black-150 w-full rounded-md py-3 px-4 focus:outline-none border tracking-wider 
           ${
             isFocused
               ? "border-primary bg-primary/10"

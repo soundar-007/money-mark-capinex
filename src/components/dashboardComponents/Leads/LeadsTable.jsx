@@ -1,8 +1,10 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   // Sample data (replace with your actual data source)
   const sampleData = [
@@ -398,7 +400,10 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
           {filteredData.map((row, i) => (
             <tr
               key={row.id}
-              className={`${(i + 1) % 2 == 0 ? "" : "bg-gray-300"}`}
+              className={`cursor-pointer ${
+                (i + 1) % 2 == 0 ? "" : "bg-gray-300"
+              }`}
+              onClick={() => router.push(`/dashboard/my-work/leads/${row.id}`)}
             >
               {columns.map((col) => (
                 <td

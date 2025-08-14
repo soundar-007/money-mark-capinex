@@ -27,6 +27,47 @@ export default function FilterSearchUI() {
     return monthNames.map((month) => `${month}-${currentYear}`);
   }
 
+  const leadsData = [
+    {
+      leadOwner: "Akash M",
+      customer: "Vikas MATHAPATI",
+      emi: "₹12,000.00",
+      mobile: "9632123318",
+      loanAmount: "₹600,000.00",
+      roi: "12 %",
+      bank: "Aditya Birla Capital",
+      product: "Personal Loan",
+      leadTime: "4749h",
+      campaign: "",
+      area: "Mumbai",
+    },
+    {
+      leadOwner: "Rohit S",
+      customer: "Amit Sharma",
+      emi: "₹15,500.00",
+      mobile: "9876543210",
+      loanAmount: "₹450,000.00",
+      roi: "10 %",
+      bank: "SBI",
+      product: "Home Loan",
+      leadTime: "240h",
+      campaign: "Diwali Offer",
+      area: "Pune",
+    },
+    {
+      leadOwner: "Priya K",
+      customer: "Nisha Jain",
+      emi: "₹9,800.00",
+      mobile: "9123456780",
+      loanAmount: "₹300,000.00",
+      roi: "14 %",
+      bank: "HDFC Bank",
+      product: "Car Loan",
+      leadTime: "120h",
+      campaign: "",
+      area: "Delhi",
+    },
+  ];
   return (
     <div className="p-4">
       <div className="flex gap-2 mb-4">
@@ -105,8 +146,47 @@ export default function FilterSearchUI() {
           <p className="text-gray-700">Chart view is under development</p>
         </div>
       )}
-      <div className="mt-4 text-gray-600 p-5 border-b-2 border-gray-400">
-        No Leads Available.
+      <div className="mt-4 text-gray-800 p-2 border-gray-400 text-center">
+        {leadsData.length === 0 ? (
+          <p>No Leads Available.</p>
+        ) : (
+          <div className="overflow-x-auto rounded-md">
+            <table className="min-w-full border border-gray-400 text-sm shadow-lg">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="p-2 border">Lead Owner</th>
+                  <th className="p-2 border">Customer</th>
+                  <th className="p-2 border">EMI</th>
+                  <th className="p-2 border">Mobile</th>
+                  <th className="p-2 border">Loan Amount</th>
+                  <th className="p-2 border">ROI</th>
+                  <th className="p-2 border">Bank</th>
+                  <th className="p-2 border">Product</th>
+                  <th className="p-2 border">Lead Time</th>
+                  <th className="p-2 border">Campaign</th>
+                  <th className="p-2 border">Area</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leadsData.map((lead, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="p-3 border">{lead.leadOwner}</td>
+                    <td className="p-3 border">{lead.customer}</td>
+                    <td className="p-3 border">{lead.emi}</td>
+                    <td className="p-3 border">{lead.mobile}</td>
+                    <td className="p-3 border">{lead.loanAmount}</td>
+                    <td className="p-3 border">{lead.roi}</td>
+                    <td className="p-3 border">{lead.bank}</td>
+                    <td className="p-3 border">{lead.product}</td>
+                    <td className="p-3 border">{lead.leadTime}</td>
+                    <td className="p-3 border">{lead.campaign || "-"}</td>
+                    <td className="p-3 border">{lead.area}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
