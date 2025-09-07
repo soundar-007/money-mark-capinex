@@ -1,10 +1,26 @@
-import React from "react";
+"use client";
+import React, { useState, useRef, useEffect } from "react";
 import { Badge } from "primereact/badge";
 import { Avatar } from "primereact/avatar";
+import { useAuth } from "@/context/AuthContext";
 import BreadcrumbWrapper from "./Wrappers/BreadcrumpWrapper";
 
 export default function Header() {
   const isLiveCall = true;
+  const { user, logout } = useAuth();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  console.log(user);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <div className="bg-white  p-2 pl-4 border-b border-gray-300 ">
       <div className="flex justify-between items-center">
@@ -85,13 +101,40 @@ export default function Header() {
               ></Badge>
             </i>
           </div>
-          <Avatar
-            icon="bx bx-user"
-            size="small"
-            style={{ backgroundColor: "#2196F3", color: "#ffffff" }}
-            shape="circle"
-            className="cursor-pointer"
-          />
+          <div className="relative" ref={dropdownRef}>
+            <Avatar
+              icon="bx bx-user"
+              size="small"
+              style={{ backgroundColor: "#2196F3", color: "#ffffff" }}
+              shape="circle"
+              className="cursor-pointer"
+              onClick={() => setShowDropdown(!showDropdown)}
+            />
+
+            {/* User Dropdown */}
+            {showDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border">
+                <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                  <p className="font-medium">
+                    {user?.display_name || user?.email || "User"}
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    {user?.role_name || "Member"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setShowDropdown(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <i className="bx bx-log-out mr-2"></i>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <p className="ml-1 text-gray-600 italic text-sm">
