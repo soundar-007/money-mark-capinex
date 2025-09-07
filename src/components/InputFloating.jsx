@@ -30,7 +30,7 @@ const InputFloating = ({
         // ref={ref}
         type={type}
         inputMode="numeric"
-        className={`placeholder-black-150 w-full rounded-md py-3 px-4 focus:outline-none border tracking-wider 
+        className={`placeholder-black-150 w-full rounded-md py-3 px-4 focus:outline-none border tracking-widest 
           ${
             isFocused
               ? "border-primary bg-primary/10"

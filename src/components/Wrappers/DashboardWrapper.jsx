@@ -2,7 +2,8 @@ import React from 'react';
 import SidebarComp from '../Sidebar';
 import Header from '../Header';
 import Footer from '../Footer';
-export default function DashboardWrapper({children}) {
+export default async function DashboardWrapper({children}) { 
+     
     return (
         <div className="flex min-h-screen w-full overflow-auto">
           {/* Sidebar Component */}

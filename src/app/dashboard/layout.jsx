@@ -1,4 +1,7 @@
 import DashboardWrapper from "@/components/Wrappers/DashboardWrapper";
+import { ProtectedRoute } from "@/components/Auth";
+import { Suspense } from "react";
+import Loader from "@/components/Loader";
 
 export const metadata = {
   title: "CRM Application",
@@ -6,9 +9,9 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return (
-    <>
+  return ( 
+    <ProtectedRoute requireAuth={true}>
       <DashboardWrapper>{children}</DashboardWrapper>
-    </>
+    </ProtectedRoute>
   );
 }

@@ -1,23 +1,43 @@
+'use client'
 import InputFloating from "@/components/InputFloating";
+import Loader from "@/components/Loader";
+import Spinner from "@/components/Spinner";
+import { useConnectors, useCreateConnector } from "@/hooks/useConnectors";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 function ConnectorPage() {
-  const dummyData = [
-    { name: "kavana", number: 987654321 },
-    { name: "kavana", number: 987654321 },
-    { name: "kavana", number: 987654321 },
-    { name: "kavana", number: 987654321 },
-    { name: "kavana", number: 987654321 },
-    { name: "kavana", number: 987654321 },
-  ];
+   const {data,isLoading} = useConnectors();
+   const {mutate} = useCreateConnector();
+   const [name,setName] = useState('')
+   const [mobileNumber,setMobileNumber] = useState('');
+   
+   const handleSave = ()=>{ 
+      const pattern = /^[0-9]{10}$/;
+    const valid = pattern.test(mobileNumber)
+    if(!valid){ 
+      toast.error('Mobile Number is Invalid')
+      return
+    }
+    const params = { 
+      name,
+      mobile_number:mobileNumber
+    }
+    mutate(params)
+    setMobileNumber('')
+    setName('')
+   }
+
+   if(isLoading) return <Loader/>
   return (
     <div>
       <div className="flex flex-col gap-4 w-full lg:flex-row lg:w-1/2 p-4">
         <div className="flex flex-col sm:flex-row gap-3 w-full">
-          <InputFloating placeholder="Name *" className="w-full sm:w-1/2" />
-          <InputFloating placeholder="Mobile *" className="w-full sm:w-1/2" />
+          <InputFloating value={name} onChange={setName} placeholder="Name *" className="w-full sm:w-1/2" />
+          <InputFloating value={mobileNumber} onChange={setMobileNumber} placeholder="Mobile *" className="w-full sm:w-1/2" />
         </div>
         <div className="flex justify-end sm:justify-start">
-          <button className="bg-primary text-white font-medium px-4 py-2 rounded-md w-full sm:w-auto sm:min-w-[100px] mt-2 sm:mt-0">
+          <button onClick={handleSave} className="bg-primary text-white font-medium px-4 py-2 rounded-md w-full sm:w-auto sm:min-w-[100px] mt-2 sm:mt-0">
             Submit
           </button>
         </div>
@@ -37,7 +57,7 @@ function ConnectorPage() {
             </tr>
           </thead>
           <tbody>
-            {dummyData.map((item, index) => (
+            {data?.map((item, index) => (
               <tr
                 className={`text-gray-800 ${
                   index % 2 !== 0 ? "bg-gray-200" : ""
@@ -48,7 +68,7 @@ function ConnectorPage() {
                 <td className="px-2 py-3 uppercase font-semibold">
                   {item.name}
                 </td>
-                <td className="px-2 py-1 font-semibold ">{item.number}</td>
+                <td className="px-2 py-1 font-semibold ">{item.mobile_number}</td>
               </tr>
             ))}
           </tbody>

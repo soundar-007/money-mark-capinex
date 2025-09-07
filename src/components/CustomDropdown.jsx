@@ -16,7 +16,7 @@ const CustomDropdown = ({
       {/* Floating Label */}
       <label
         className={`absolute left-3 transition-all pointer-events-none px-1 bg-white ${
-          isFocused || value ? "text-sm -top-2 text-primary-light" : "text-gray-700 top-2"
+          isFocused || value ? "text-xs -top-2 text-primary-light" : "text-gray-700 top-2"
         }`}
       >
         {label}
@@ -41,7 +41,7 @@ const CustomDropdown = ({
           }}
         >
           <option value="" hidden></option>
-          {options.map((option, index) => (
+          {options?.map((option, index) => (
             <option
               key={index}
               value={option.value}
@@ -64,3 +64,4 @@ const CustomDropdown = ({
 };
 
 export default CustomDropdown;
+
