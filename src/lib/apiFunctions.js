@@ -1,6 +1,5 @@
 import api from "./api";
 
-// Simple API functions
 export const apiFunctions = {
   // Login
   login: async (credentials) => {
@@ -18,9 +17,10 @@ export const apiFunctions = {
   refreshToken: async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) throw new Error("No refresh token");
-
-    const response = await api.post("/auth/refresh", { refreshToken });
-    return response.data;
+    const response = await api.post("/auth/token/refresh", {
+      refresh: refreshToken,
+    });
+    return response;
   },
 
   // Get leads
@@ -95,7 +95,6 @@ export const apiFunctions = {
   },
 
   // connectors
-
   createConnector: async (params) => {
     console.log(params);
     const response = await api.post("/connectors", {
@@ -116,7 +115,6 @@ export const apiFunctions = {
   },
 
   //banks
-
   getBanks: async () => {
     const response = await api.get("/banks");
     return response.data?.data;
@@ -174,5 +172,72 @@ export const apiFunctions = {
   disableUser: async (userId) => {
     const response = await api.put(`/users/${userId}`);
     return response.data?.data;
+  },
+  // organizations
+  getOrganizations: async () => {
+    const response = await api.get("/organizations");
+    return response.data.data;
+  },
+
+  // dialers
+  getDialerUsers: async () => {
+    const response = await api.get("/dialers/users");
+    return response.data.data;
+  },
+  updateQueueDialerUser: async (param) => {
+    const response = await api.put(`dialers/users`, param);
+    return response.data.data;
+  },
+  getUsersByDialer: async (param) => {
+    const response = await api.get(`dialers/users/?dialer_id=${param}`);
+    return response.data.data;
+  },
+  getDialers: async () => {
+    const response = await api.get("/dialers");
+    return response.data.data;
+  },
+  // dialer queue
+  getDialerQueue: async () => {
+    const response = await api.get(`dialers/queues`);
+    return response.data.data;
+  },
+  addDialerQueue: async (param) => {
+    const response = await api.post("dialers/queues", param);
+    return response.data.data;
+  },
+  updateDialerQueue: async (param) => {
+    const response = await api.put(`dialers/queues/${param.id}`, param);
+    return response.data.data;
+  },
+  deleteDialerQueue: async (param) => {
+    const response = await api.delete(`dialers/queues/${param}`);
+    return response.data.data;
+  },
+  // dialer gateway
+  getDialerGateway: async () => {
+    const response = await api.get(`dialers/gateways`);
+    return response.data.data;
+  },
+  addDialerGateway: async (param) => {
+    const response = await api.post("dialers/gateways", param);
+    return response.data.data;
+  },
+  updateDialerGateway: async (param) => {
+    const response = await api.put(`dialers/gateways/${param}`);
+    return response.data.data;
+  },
+  deleteDialerGateway: async (param) => {
+    const response = await api.delete(`dialers/gateways/${param}`);
+    return response.data.data;
+  },
+  defaultDialerGateway: async (param) => {
+    const response = await api.put(`dialers/gateways/${param}/set_default`, {
+      is_active: true,
+    });
+    return response.data.data;
+  },
+  assignQueue: async (param) => {
+    const response = await api.put(`dialers/users`, param);
+    return response.data.data;
   },
 };

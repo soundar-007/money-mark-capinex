@@ -16,7 +16,9 @@ const CustomDropdown = ({
       {/* Floating Label */}
       <label
         className={`absolute left-3 transition-all pointer-events-none px-1 bg-white ${
-          isFocused || value ? "text-xs -top-2 text-primary-light" : "text-gray-700 top-2"
+          isFocused || value
+            ? "text-xs -top-2 text-primary-light"
+            : "text-gray-700 top-2"
         }`}
       >
         {label}
@@ -25,7 +27,7 @@ const CustomDropdown = ({
       {/* Dropdown with Flexbox */}
       <div className="flex items-center mt-1">
         <select
-          className="w-full  rounded-md py-2 px-3 focus:outline-none bg-white appearance-none"
+          className="w-full  rounded-md py-2 px-3 focus:outline-none bg-white appearance-none cursor-pointer"
           value={value}
           onChange={(e) => {
             onChange(e.target.value);
@@ -64,4 +66,3 @@ const CustomDropdown = ({
 };
 
 export default CustomDropdown;
-

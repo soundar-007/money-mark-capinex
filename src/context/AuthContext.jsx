@@ -69,7 +69,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    setIsLoading(true);
+    const delay = new Promise((res, rej) => {
+      setTimeout(() => {
+        res();
+      }, 700);
+    });
+    await delay;
     try {
       localStorage.removeItem("authToken");
       localStorage.removeItem("refreshToken");
@@ -79,6 +86,8 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
     } catch (error) {
       console.error("Error during logout:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

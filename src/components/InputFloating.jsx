@@ -9,6 +9,7 @@ const InputFloating = ({
   className = "w-full sm:w-1/4",
   placeholder = "",
   ref = "",
+  disabled = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -42,6 +43,7 @@ const InputFloating = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
+        disabled={disabled}
       />
     </div>
   );

@@ -1,23 +1,23 @@
 "use client";
+import AddOrganizationModal from "@/components/organization/AddOrganizationModal";
 import { useState } from "react";
 
 export default function Home() {
-  const [showAddButton, setShowAddButton] = useState(true);
+  const [showAddButton, setShowAddButton] = useState(false);
 
   const handleAddClick = () => {
-    // Functionality to add a new level or item
-    console.log("Add button clicked!");
+
   };
 
   return (
-    <div className="p-4 relative min-h-screen"> 
-      <div className="absolute top-4 right-4 md:right-20"> 
+    <div className="p-4 relative min-h-screen">
+      <div className="absolute top-4 right-4 md:right-20">
         <button className="bg-black text-white px-4 py-1 rounded-md">
           Sync
         </button>
       </div>
 
-      <div className="flex flex-col items-center space-y-4 mt-10 md:mt-20 max-w-screen-md mx-auto"> 
+      <div className="flex flex-col items-center space-y-4 mt-10 md:mt-20 max-w-screen-md mx-auto">
         <div className="border border-gray-400 bg-gray-200 p-4 rounded-md flex flex-col items-center mb-5 w-full md:w-auto">
           <h3 className="text-lg font-semibold">President</h3>
           <a href="#" className="text-blue-800 underline font-bold">
@@ -34,21 +34,24 @@ export default function Home() {
           </svg>
         </div>
 
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2 w-full md:w-auto"> 
+        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2 w-full md:w-auto">
           <div className="border border-gray-400 p-4 rounded-md flex justify-center items-center flex-col w-full md:w-auto">
             <h3 className="text-lg font-semibold">Top Management</h3>
             <a href="#" className="text-blue-800 underline font-bold">
               Users
             </a>
           </div>
-          {showAddButton && (
-            <button
-              onClick={handleAddClick}
-              className="bg-green-200 hover:bg-green-300 px-4 py-8 rounded text-lg font-bold w-full md:w-auto"
-            >
-              +
-            </button>
-          )}
+
+          <button
+            onClick={() => setShowAddButton(true)}
+            className="bg-green-200 hover:bg-green-300 px-4 py-8 rounded text-lg font-bold w-full md:w-auto"
+          >
+            +
+          </button>
+          <AddOrganizationModal
+            isOpen={showAddButton}
+            onClose={() => setShowAddButton(false)}
+          />
         </div>
       </div>
     </div>

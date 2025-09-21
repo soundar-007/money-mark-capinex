@@ -51,10 +51,11 @@ export const useUpdateUser = () => {
       if (variables?.id) {
         queryClient.invalidateQueries(["users_details", variables.id]);
       }
+      queryClient.invalidateQueries("dialer_users");
     },
     onError: (err) => {
+      console.log(err);
       const res = formatBackendErrors(err);
-      console.log(res);
       toast.error(res);
     },
   });
