@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomDropdown from "@/components/CustomDropdown";
 import InputFloating from "@/components/InputFloating";
 import DropdownMenu from "@/components/users/DropdownMenu";
@@ -7,11 +7,13 @@ import {
   useAccessType,
   useCreateUser,
   useDeleteUser,
+  useUpdateUser,
   useUsers,
 } from "@/hooks/useUsers";
 import Loader from "@/components/Loader";
 import { toast } from "react-hot-toast";
 import Spinner from "@/components/Spinner";
+import ResetPassword from "@/components/users/ResetPassword";
 const UserManagement = () => {
   const [mobile, setMobile] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -20,6 +22,20 @@ const UserManagement = () => {
   const { data, isLoading } = useUsers();
   const { data: accessType } = useAccessType();
   const { mutate: createUser, isPending } = useCreateUser();
+  const { mutate: updateUser } = useUpdateUser();
+  const [localUsers, setLocalUsers] = useState([]);
+
+  useEffect(() => {
+    if (data) setLocalUsers(data);
+  }, [data]);
+
+  const handleAccessTypeChange = (user, newAccess) => {
+    setLocalUsers((prev) =>
+      prev.map((u) => (u.id === user.id ? { ...u, access_type: newAccess } : u))
+    );
+
+    updateUser({ ...user, access_type: newAccess });
+  };
 
   const handleCreateUser = () => {
     if (!mobile || mobile.trim() === "") {
@@ -53,8 +69,6 @@ const UserManagement = () => {
   // const handleDeleteUser = (userId)=>{
   //  deleteUser(userId)
   // }
-
-  const handleAccessTypeChange = (userId, newAccessType) => {};
 
   if (isLoading) return <Loader />;
   return (
@@ -139,7 +153,7 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.map((user, idx) => (
+            {localUsers?.map((user, idx) => (
               <tr key={user.id} className="border-b border-gray-300">
                 <td className="py-4 whitespace-nowrap px-4">{idx + 1}</td>
                 <td className="py-4 whitespace-nowrap px-4">
@@ -152,12 +166,16 @@ const UserManagement = () => {
                   <select
                     value={user.access_type}
                     onChange={(e) =>
-                      handleAccessTypeChange(user.id, e.target.value)
+                      handleAccessTypeChange(user, e.target.value)
                     }
                     className="w-full rounded-md py-2 px-2 focus:outline-none bg-white border border-gray-400 text-gray-600"
                   >
                     {accessType?.map((access) => {
-                      return <option value={access.code}>{access.name}</option>;
+                      return (
+                        <option key={access.code} value={access.code}>
+                          {access.name}
+                        </option>
+                      );
                     })}
                   </select>
                 </td>
@@ -167,8 +185,18 @@ const UserManagement = () => {
                 </td>
                 <td className="py-4 whitespace-nowrap px-4">{user?.email}</td>
                 <td className="py-4 whitespace-nowrap px-4">
-                  <span className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-sm font-bold">
-                    <i className="bx bxs-circle text-green-800 text-xs mr-1"></i>
+                  <span
+                    className={`rounded-full px-3 py-1 text-sm font-bold  ${
+                      user.is_active
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-300 text-gray-600"
+                    }`}
+                  >
+                    <i
+                      className={`bx bxs-circle mr-1 text-xs ${
+                        user.is_active ? "text-green-800" : "text-gray-600"
+                      }`}
+                    ></i>
                     {user.is_active ? "Active" : "Inactive"}
                   </span>
                 </td>
