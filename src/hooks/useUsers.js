@@ -60,6 +60,21 @@ export const useUpdateUser = () => {
     },
   });
 };
+export const useMakeActive = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params) => apiFunctions.makeActive(params),
+    onSuccess: () => {
+      toast.success("User updated Successfully");
+      queryClient.invalidateQueries(["users_all"]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};
 
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
@@ -69,6 +84,18 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       toast.success("User Deleted Successfully");
       queryClient.invalidateQueries(["users_all"]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: (params) => apiFunctions.resetPassword(params),
+    onSuccess: () => {
+      toast.success("Password reset successfully");
     },
     onError: (err) => {
       const res = formatBackendErrors(err);

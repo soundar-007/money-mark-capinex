@@ -3,8 +3,9 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useDeleteUser } from "@/hooks/useUsers";
+import { useDeleteUser, useMakeActive } from "@/hooks/useUsers";
 import Spinner from "../Spinner";
+import ResetPassword from "./ResetPassword";
 
 const DropdownMenu = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,24 +14,28 @@ const DropdownMenu = ({ user }) => {
   const menuRef = useRef(null);
   const router = useRouter();
   const { mutate: deleteUser, isPending } = useDeleteUser();
+  const { mutate: makeStatusChange, isPending: activeLoading } = useMakeActive();
+  const [showAddButton, setShowAddButton] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClick = (e) => {
       if (
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target) &&
         menuRef.current &&
-        !menuRef.current.contains(e.target)
+        !menuRef.current.contains(e.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target)
       ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
-  const handleDelete = (userId) => {
-    deleteUser(userId);
+
+  const handleMenuClick = (action) => {
+    if (typeof action === "function") action();
   };
+
   const toggleDropdown = () => {
     if (isOpen) {
       setIsOpen(false);
@@ -52,26 +57,47 @@ const DropdownMenu = ({ user }) => {
       ref={menuRef}
       className="bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
       style={menuStyles}
+      onClick={(e) => e.stopPropagation()}
     >
       <div className="py-1">
         <div
-          onClick={() => router.push(`/dashboard/users/${user.id}`)}
+          onClick={() =>
+            handleMenuClick(() => router.push(`/dashboard/users/${user.id}`))
+          }
           className="px-4 py-2 cursor-pointer hover:bg-gray-100"
         >
           Edit
         </div>
-        <div className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-          Make Inactive
+        <div
+          onClick={() =>
+            handleMenuClick(() =>
+              makeStatusChange({ ...user, is_active: !user.is_active })
+            )
+          }
+          className="px-4 py-2 cursor-pointer capitalize hover:bg-gray-100"
+        >
+          Make {user.is_active ? "Inactive" : "active"}
         </div>
-        <div className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+        <div
+          onClick={() => handleMenuClick(() => {})}
+          className="px-4 py-2 cursor-pointer capitalize hover:bg-gray-100"
+        >
           Transfer
         </div>
-        <div className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+        <div
+          onClick={() => handleMenuClick(() => setShowAddButton(true))}
+          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+        >
           Reset Password
         </div>
+        <ResetPassword
+          user={user}
+          isOpen={showAddButton}
+          onClose={() => setShowAddButton(false)}
+        />
         <div className="border-t my-1"></div>
         <div
-          onClick={() => handleDelete(user.id)}
+          onClick={() => handleMenuClick(() => deleteUser(user.id))}
           className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-red-600 hover:text-white text-red-600"
         >
           {isPending ? "Deleting.." : "Delete"}
@@ -85,7 +111,10 @@ const DropdownMenu = ({ user }) => {
     <>
       <button
         ref={buttonRef}
-        onClick={toggleDropdown}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleDropdown();
+        }}
         className="p-2 rounded-full hover:bg-gray-200"
       >
         <MoreVertical className="w-6 h-6" />

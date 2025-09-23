@@ -173,6 +173,14 @@ export const apiFunctions = {
     const response = await api.put(`/users/${userId}`);
     return response.data?.data;
   },
+  makeActive:async(param)=>{
+     const response = await api.put(`/users/${param.id}/status`,param);
+    return response.data?.data;
+  },
+  resetPassword:async(userId)=>{
+    const response = await api.get(`/users/${userId}/access_code`);
+    return response.data?.data;
+  },
   // organizations
   getOrganizations: async () => {
     const response = await api.get("/organizations");

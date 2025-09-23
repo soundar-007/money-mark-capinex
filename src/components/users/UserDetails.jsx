@@ -64,15 +64,13 @@ const UserDetails = ({ userId }) => {
     });
   };
   const onSubmit = (formData) => {
-    // Prepare update payload matching API structure
     const updatePayload = {
-      id: userInfo.id, // assuming update API requires user id
-      mobile_number: userInfo.mobile_number, // keep mobile_number from existing user info
+      id: userInfo.id,
+      mobile_number: userInfo.mobile_number,
       display_name: formData.displayName,
       access_type: formData.accessType,
       email: formData.email,
-      // add designation if your API handles it, else remove
-      // designation: formData.designation,
+      designation: formData.designation,
     };
 
     updateUser(updatePayload, {
