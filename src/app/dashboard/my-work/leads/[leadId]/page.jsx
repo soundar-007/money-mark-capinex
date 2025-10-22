@@ -3,6 +3,13 @@
 import React, { useState } from "react";
 import ManualEntry from "@/components/ManualEntry";
 import { bankComparisonData } from "@/dummyData/bankData";
+import UploadDocumentModal from "@/components/Leads/UploadDocumentModal";
+import FollowUpModal from "@/components/Leads/FollowUpModal";
+import ShareModal from "@/components/Leads/ShareModal";
+import PassOnModal from "@/components/Leads/PassOnModal";
+import Notes from "@/components/Leads/Notes";
+import CustomEditor from "@/components/dashboardComponents/ColdCalling/Editor";
+import CustomerDetailsEditModal from "@/components/Leads/CustomerDetailsEditModal";
 
 const customer = {
   name: "AKASH MATHAPATI",
@@ -64,6 +71,32 @@ export default function CustomerDetails() {
   });
 
   const [isManualEntryOpen, setIsManualEntryOpen] = useState(false);
+  const [documentModal, setDocumentModal] = useState(false);
+  const [followUpModal, setFollowUpModal] = useState(false);
+  const [shareModal, setShareModal] = useState(false);
+  const [passOnModal, setPassOnModal] = useState(false);
+  const [editModal,setEditModal] = useState(false);
+
+  const handleActionClick = (label) => {
+    switch(label){
+      case "Upload Document":
+        setDocumentModal(true)
+        break;
+      case 'Follow Up':
+        setFollowUpModal(true);
+        break;
+      case 'Share':
+        setShareModal(true);
+        break;
+      case 'Pass On':
+        setPassOnModal(true);
+        break;
+      default:
+        break;
+    }
+     
+  };
+
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -89,6 +122,7 @@ export default function CustomerDetails() {
                 Customer Name
               </span>
               <img
+                onClick={() => setEditModal(true)}
                 src="/assets/edit-button.png"
                 alt="Edit"
                 className="w-3 h-3 sm:w-4 sm:h-4 inline cursor-pointer"
@@ -112,6 +146,26 @@ export default function CustomerDetails() {
               {customer.mobile}
             </p>
           </div>
+          <ManualEntry
+            isOpen={isManualEntryOpen}
+            onClose={() => setIsManualEntryOpen(false)}
+          />
+          <UploadDocumentModal
+            isOpen={documentModal}
+            onClose={() => setDocumentModal(false)}
+          />
+          <FollowUpModal
+            isOpen={followUpModal}
+            onClose={() => setFollowUpModal(false)}
+          />
+          <ShareModal
+            isOpen={shareModal}
+            onClose={() => setShareModal(false)}
+          />
+          <PassOnModal
+            isOpen={passOnModal}
+            onClose={() => setPassOnModal(false)}
+          />
         </div>
 
         {/* Action Buttons Row */}
@@ -121,6 +175,7 @@ export default function CustomerDetails() {
               <button
                 className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-white border border-gray-400 rounded hover:bg-gray-100 transition text-xs sm:text-sm font-medium"
                 type="button"
+                onClick={() => handleActionClick(label)}
               >
                 <img
                   src={icon}
@@ -594,12 +649,18 @@ export default function CustomerDetails() {
           </div>
         </div>
       </div>
-
-      {/* Manual Entry Modal */}
-      <ManualEntry
-        isOpen={isManualEntryOpen}
-        onClose={() => setIsManualEntryOpen(false)}
-      />
+      {/* Notes & Editor  */}
+      <div
+        className="flex flex-col w-2/4 shadow-md p-4 rounded-lg"
+        style={{ maxHeight: "400px" }}
+      >
+        <CustomEditor />
+        <Notes />
+        <CustomerDetailsEditModal
+          isOpen={editModal}
+          onClose={() => setEditModal(false)}
+        />
+      </div>
     </div>
   );
 }
