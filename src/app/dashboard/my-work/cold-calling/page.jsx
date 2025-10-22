@@ -5,11 +5,13 @@ import CallLogs from "@/components/dashboardComponents/ColdCalling/CallLogsTable
 
 import DateTimePickerModal from "@/components/dashboardComponents/ColdCalling/DateTimePicker";
 import PauseReason from "@/components/dashboardComponents/ColdCalling/PauseReason";
+import CallSpy from "@/components/mywork/coldCalling/CallSpy";
 const CallDashboard = () => {
   const [checked, setChecked] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
   const [visible, setVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
+   const [showAddButton, setShowAddButton] = useState(false);
   const completedCalls = [
     {
       id: 1,
@@ -154,7 +156,8 @@ const CallDashboard = () => {
         <div className="flex flex-col gap-1 mt-12">
           <h3 className="text-center mb-2 cursor-pointer">Agents</h3>
           {agents.map((agent, idx) => (
-            <div
+            <div 
+              onClick={()=>setShowAddButton(true)}
               key={idx}
               className="p-1 px-3 bg-yellow-100 text-black text-start hover:bg-blue-600 cursor-pointer"
             >
@@ -163,6 +166,7 @@ const CallDashboard = () => {
           ))}
         </div>
       </div>
+      <CallSpy  isOpen={showAddButton} onClose={()=>setShowAddButton(false)}/>
     </div>
   );
 };

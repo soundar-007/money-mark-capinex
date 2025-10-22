@@ -1,8 +1,10 @@
 "use client";
+import AddBackLog from "@/components/mywork/backLog/AddBackLog";
 import { useState } from "react";
 
 export default function Backlog() {
   const [activeTab, setActiveTab] = useState("User");
+  const [showAddButton,setShowAddButton] = useState(false)
   const tabs = ["User", "Org"];
   const statuses = ["ToDo", "Discussion", "Followup", "Closed"];
 
@@ -85,7 +87,7 @@ export default function Backlog() {
             <option>User 1</option>
             <option>User 2</option>
           </select>
-          <button className="bg-black text-white px-4 py-2 rounded-md">
+          <button onClick={()=>setShowAddButton(true)} className="bg-black text-white px-4 py-2 rounded-md">
             Create +
           </button>
         </div>
@@ -163,6 +165,7 @@ export default function Backlog() {
           </div>
         ))}
       </div>
+      <AddBackLog isOpen={showAddButton} onClose={()=>setShowAddButton(false)}/>
     </div>
   );
 }
