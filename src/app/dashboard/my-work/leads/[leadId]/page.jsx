@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import ManualEntry from "@/components/ManualEntry";
 import { bankComparisonData } from "@/dummyData/bankData";
 import UploadDocumentModal from "@/components/Leads/UploadDocumentModal";
@@ -10,6 +11,11 @@ import PassOnModal from "@/components/Leads/PassOnModal";
 import Notes from "@/components/Leads/Notes";
 import CustomEditor from "@/components/dashboardComponents/ColdCalling/Editor";
 import CustomerDetailsEditModal from "@/components/Leads/CustomerDetailsEditModal";
+import InputFloating from "@/components/InputFloating";
+import CustomDropdown from "@/components/CustomDropdown";
+import { getLeadDetails, updateLead } from "@/hooks/useLeads";
+import Spinner from "@/components/Spinner";
+import { useProducts } from "@/hooks/useApi";
 
 const customer = {
   name: "AKASH MATHAPATI",
@@ -37,72 +43,80 @@ const actions = [
 ];
 
 // Dummy data for dropdowns
-const products = [
-  { id: 1, name: "Personal Loan" },
-  { id: 2, name: "Business Loan" },
-  { id: 3, name: "Home Loan" },
-  { id: 4, name: "Vehicle Loan" },
+let products = [
+  { value: 1, name: "Personal Loan" },
+  { value: 2, name: "Business Loan" },
+  { value: 3, name: "Home Loan" },
+  { value: 4, name: "Vehicle Loan" },
 ];
 
 const locations = [
-  { id: 1, name: "Mumbai (Mumbai)" },
-  { id: 2, name: "Delhi (Delhi)" },
-  { id: 3, name: "Bangalore (Bangalore)" },
-  { id: 4, name: "Chennai (Chennai)" },
+  { value: 1, name: "Mumbai (Mumbai)" },
+  { value: 2, name: "Delhi (Delhi)" },
+  { value: 3, name: "Bangalore (Bangalore)" },
+  { value: 4, name: "Chennai (Chennai)" },
 ];
 
 const tiers = [
-  { id: 1, name: "Tier 1" },
-  { id: 2, name: "Tier 2" },
-  { id: 3, name: "Tier 3" },
+  { value: 1, name: "Tier 1" },
+  { value: 2, name: "Tier 2" },
+  { value: 3, name: "Tier 3" },
 ];
 
 export default function CustomerDetails() {
-  const [formData, setFormData] = useState({
-    productId: 1,
-    requiredAmount: "",
-    expectedTenure: "",
-    netSalary: "",
-    corporate: "",
-    currentObligations: "",
-    cibilScore: "",
-    tierId: "",
-    locationId: 1,
-  });
+  const [formData, setFormData] = useState({});
 
   const [isManualEntryOpen, setIsManualEntryOpen] = useState(false);
   const [documentModal, setDocumentModal] = useState(false);
   const [followUpModal, setFollowUpModal] = useState(false);
   const [shareModal, setShareModal] = useState(false);
   const [passOnModal, setPassOnModal] = useState(false);
-  const [editModal,setEditModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [productId, setProductId] = useState("");
+  const [locationId, setLocationId] = useState("");
+  const [tierId, setTierId] = useState("");
+
+  const params = useParams();
+  const Id = params.leadId;
+  const { data, error, isLoading } = getLeadDetails(Id);
+  // const { data: product } = useProducts();
+  const { mutate, isPending } = updateLead(Id);
+  const handleUpdate = (params) => {
+    mutate(params);
+  };
+
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
+
+  if (isLoading) return <Spinner className={"w-20 h-20 border-t-5 border-2"} />;
 
   const handleActionClick = (label) => {
-    switch(label){
+    switch (label) {
       case "Upload Document":
-        setDocumentModal(true)
+        setDocumentModal(true);
         break;
-      case 'Follow Up':
+      case "Follow Up":
         setFollowUpModal(true);
         break;
-      case 'Share':
+      case "Share":
         setShareModal(true);
         break;
-      case 'Pass On':
+      case "Pass On":
         setPassOnModal(true);
         break;
       default:
         break;
     }
-     
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleInputFloatingChange = (fieldName) => (value) => {
+    handleChange({ target: { name: fieldName, value } });
   };
 
   const handleSubmit = (e) => {
@@ -128,14 +142,16 @@ export default function CustomerDetails() {
                 className="w-3 h-3 sm:w-4 sm:h-4 inline cursor-pointer"
               />
             </div>
-            <p className="text-gray-700 text-sm font-medium">{customer.name}</p>
+            <p className="text-gray-700 text-sm font-medium">
+              {formData?.leadname}
+            </p>
           </div>
           <div>
             <span className="font-normal text-gray-600 text-sm">
               Lead Status
             </span>
             <p className="text-blue-600 bg-blue-100 px-2 py-1 rounded-md font-medium mb-0 text-xs sm:text-sm">
-              {customer.leadStatus}
+              {formData?.lead_status}
             </p>
           </div>
           <div className="flex flex-col">
@@ -143,7 +159,7 @@ export default function CustomerDetails() {
               Mobile Number
             </span>
             <p className="font-medium text-gray-700 text-sm">
-              {customer.mobile}
+              {formData?.phone_number}
             </p>
           </div>
           <ManualEntry
@@ -227,89 +243,46 @@ export default function CustomerDetails() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Products Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Products <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={formData.productId}
-                  onChange={(e) =>
-                    handleInputChange("productId", parseInt(e.target.value))
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent appearance-none bg-white"
-                  required
-                >
-                  {products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <CustomDropdown
+                label="Products"
+                options={products}
+                value={productId}
+                onChange={setProductId}
+                className="w-full"
+              />
             </div>
 
             {/* Required Amount */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Required Amount <span className="text-red-500">*</span>
-              </label>
-              <input
+              <InputFloating
+                label="Required Amount*"
                 type="number"
-                value={formData.requiredAmount}
-                onChange={(e) =>
-                  handleInputChange("requiredAmount", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-hover-input_hover  focus:border-transparent"
-                placeholder="Required Amount"
-                required
+                value={formData?.required_amount}
+                onChange={handleInputFloatingChange("required_amount")}
+                className="w-full"
               />
             </div>
 
             {/* Expected Tenure */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Expected Tenure(In Months){" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <input
+              <InputFloating
+                label="Exp Tenure(In Months)*"
+                // name="firstName"
                 type="number"
-                value={formData.expectedTenure}
-                onChange={(e) =>
-                  handleInputChange("expectedTenure", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-hover-input_hover focus:border-transparent"
-                placeholder="Expected Tenure"
-                required
+                value={formData?.expected_tenure}
+                onChange={handleInputFloatingChange("expected_tenure")}
+                className="w-full"
               />
             </div>
 
             {/* Net Salary */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Net Salary <span className="text-red-500">*</span>
-              </label>
-              <input
+              <InputFloating
+                label="Net Salary*"
                 type="number"
-                value={formData.netSalary}
-                onChange={(e) => handleInputChange("netSalary", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-hover-input_hover focus:border-transparent"
-                placeholder="Net Salary"
-                required
+                value={formData?.net_salary}
+                onChange={handleInputFloatingChange("net_salary")}
+                className="w-full"
               />
             </div>
           </div>
@@ -318,128 +291,57 @@ export default function CustomerDetails() {
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             {/* Corporate */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Corporate <span className="text-red-500">*</span>
-              </label>
-              <input
+              <InputFloating
+                label="Corporate"
                 type="text"
-                value={formData.corporate}
-                onChange={(e) => handleInputChange("corporate", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-hover-input_hover focus:border-transparent"
-                placeholder="Corporate"
-                required
+                value={formData?.corporate}
+                onChange={handleInputFloatingChange("corporate")}
+                className="w-full"
               />
             </div>
 
             {/* Current Obligations */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Current Obligations
-              </label>
-              <input
-                type="number"
-                value={formData.currentObligations}
-                onChange={(e) =>
-                  handleInputChange("currentObligations", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-hover-input_hover focus:border-transparent"
-                placeholder="Current Obligations"
+              <InputFloating
+                label="Current Obligations"
+                type="text"
+                value={formData?.current_obligations}
+                onChange={handleInputFloatingChange("current_obligations")}
+                className="w-full"
               />
             </div>
 
             {/* Credit Score */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Credit Score
-              </label>
-              <input
-                type="number"
-                value={formData.cibilScore}
-                onChange={(e) =>
-                  handleInputChange("cibilScore", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-hover-input_hover focus:border-transparent"
-                placeholder="Credit Score"
+              <InputFloating
+                label="Credit Score"
+                type="text"
+                value={formData?.credit_score}
+                onChange={handleInputFloatingChange("credit_score")}
+                className="w-full"
               />
             </div>
 
             {/* Tier Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tier
-              </label>
-              <div className="relative">
-                <select
-                  value={formData.tierId}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "tierId",
-                      e.target.value ? parseInt(e.target.value) : ""
-                    )
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent appearance-none bg-white"
-                >
-                  <option value="">Select Tier</option>
-                  {tiers.map((tier) => (
-                    <option key={tier.id} value={tier.id}>
-                      {tier.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <CustomDropdown
+                label="Tier"
+                options={tiers}
+                value={tierId}
+                onChange={setTierId}
+                className="w-full"
+              />
             </div>
 
             {/* Location Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Location <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={formData.locationId}
-                  onChange={(e) =>
-                    handleInputChange("locationId", parseInt(e.target.value))
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-transparent appearance-none bg-white"
-                  required
-                >
-                  {locations.map((location) => (
-                    <option key={location.id} value={location.id}>
-                      {location.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <CustomDropdown
+                label="Locations"
+                options={locations}
+                value={locationId}
+                onChange={setLocationId}
+                className="w-full"
+              />
             </div>
 
             {/* Get Commercials Button */}
@@ -657,7 +559,9 @@ export default function CustomerDetails() {
         <CustomEditor />
         <Notes />
         <CustomerDetailsEditModal
+          customer={formData}
           isOpen={editModal}
+          handleUpdate={handleUpdate}
           onClose={() => setEditModal(false)}
         />
       </div>

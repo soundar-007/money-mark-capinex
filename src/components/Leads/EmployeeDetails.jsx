@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import InputFloating from "../InputFloating";
 import Button from "../Button";
 
-function EmployeeDetails() {
+function EmployeeDetails({ customer, handleUpdate }) {
   const [formData, setFormData] = useState({
-    employmentType: "Salaried",
-    netSalary: "",
-    grossSalary: "",
-    totalWorkExp: "",
-    totalWorkExpInCurrent: "",
-    company: "",
-    officialEmail: "",
+    employment_type: customer.employment_type,
+    net_salary: customer.net_salary,
+    gross_salary: customer.gross_salary,
+    total_work_experience: customer.total_work_experience,
+    current_work_experience: customer.current_work_experience,
+    company: customer.company,
+    official_email: customer.official_email,
   });
 
   const handleChange = (e) => {
@@ -24,7 +24,7 @@ function EmployeeDetails() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated Employee Details:", formData);
+    handleUpdate(formData);
   };
 
   return (
@@ -47,9 +47,9 @@ function EmployeeDetails() {
 
       <InputFloating
         label="Net Salary *"
-        name="netSalary"
-        value={formData.netSalary}
-        onChange={handleInputFloatingChange("netSalary")}
+        name="net_salary"
+        value={formData.net_salary}
+        onChange={handleInputFloatingChange("net_salary")}
         className="w-full"
         type="number"
         required
@@ -57,9 +57,9 @@ function EmployeeDetails() {
 
       <InputFloating
         label="Gross Salary *"
-        name="grossSalary"
-        value={formData.grossSalary}
-        onChange={handleInputFloatingChange("grossSalary")}
+        name="gross_salary"
+        value={formData.gross_salary}
+        onChange={handleInputFloatingChange("gross_salary")}
         className="w-full"
         type="number"
         required
@@ -67,17 +67,17 @@ function EmployeeDetails() {
 
       <InputFloating
         label="Total Work Exp."
-        name="totalWorkExp"
-        value={formData.totalWorkExp}
-        onChange={handleInputFloatingChange("totalWorkExp")}
+        name="total_work_experience"
+        value={formData.total_work_experience}
+        onChange={handleInputFloatingChange("total_work_experience")}
         className="w-full"
       />
 
       <InputFloating
         label="Total Work Exp (Current)"
-        name="totalWorkExpInCurrent"
-        value={formData.totalWorkExpInCurrent}
-        onChange={handleInputFloatingChange("totalWorkExpInCurrent")}
+        name="current_work_experience"
+        value={formData.current_work_experience}
+        onChange={handleInputFloatingChange("current_work_experience")}
         className="w-full"
       />
 
@@ -91,9 +91,9 @@ function EmployeeDetails() {
 
       <InputFloating
         label="Official Email"
-        name="officialEmail"
-        value={formData.officialEmail}
-        onChange={handleInputFloatingChange("officialEmail")}
+        name="official_email"
+        value={formData.official_email}
+        onChange={handleInputFloatingChange("official_email")}
         className="w-full"
         type="email"
       />

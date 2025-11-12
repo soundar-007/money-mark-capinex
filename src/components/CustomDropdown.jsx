@@ -48,6 +48,9 @@ const CustomDropdown = ({
               key={index}
               value={option.value}
               disabled={option.value === ""}
+               className={`cursor-pointer border-none px-4 py-2 hover:bg-gray-100 ${
+                  option.value === value ? "bg-gray-200" : ""
+                }`}
             >
               {option.name}
             </option>

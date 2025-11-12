@@ -1,60 +1,20 @@
 "use client";
 import AddBackLog from "@/components/mywork/backLog/AddBackLog";
+import Spinner from "@/components/Spinner";
+import { useBackLogs } from "@/hooks/useBacklogs";
+import useGroupedBacklogs from "@/hooks/useGroupedBacklogs";
 import { useState } from "react";
 
 export default function Backlog() {
   const [activeTab, setActiveTab] = useState("User");
-  const [showAddButton,setShowAddButton] = useState(false)
+  const [showAddButton, setShowAddButton] = useState(false);
   const tabs = ["User", "Org"];
   const statuses = ["ToDo", "Discussion", "Followup", "Closed"];
-
-  const dummyData = {
-    ToDo: [
-      {
-        name: "Bhoomika",
-        phone: "9739766016",
-        source: "Calling",
-        time: "28/01/2025 12:53",
-        assignee: "ANAND P",
-        duration: "15 h",
-      },
-      {
-        name: "Swathi",
-        phone: "9632822105",
-        source: "Calling",
-        time: "24/01/2025 14:32",
-        assignee: "",
-        duration: "1 d",
-      },
-      {
-        name: "Swathi",
-        phone: "9632822105",
-        source: "Calling",
-        time: "24/01/2025 14:32",
-        assignee: "",
-        duration: "1 d",
-      },
-      {
-        name: "Swathi",
-        phone: "9632822105",
-        source: "Calling",
-        time: "24/01/2025 14:32",
-        assignee: "",
-        duration: "1 d",
-      },
-    ],
-    Discussion: [
-      {
-        name: "Akash M",
-        phone: "9986767811",
-        source: "Whatsapp",
-        time: "25/01/2025 18:37",
-        duration: "1 d",
-      },
-    ],
-    Followup: [],
-    Closed: [],
-  };
+  const { data, isLoading } = useBackLogs();
+  const groupedBacklogs = useGroupedBacklogs(data || []);
+  if (isLoading) {
+    return <Spinner className={"w-11 h-12"} />;
+  }
 
   return (
     <div className="p-4 sm:p-6 w-full">
@@ -87,7 +47,10 @@ export default function Backlog() {
             <option>User 1</option>
             <option>User 2</option>
           </select>
-          <button onClick={()=>setShowAddButton(true)} className="bg-black text-white px-4 py-2 rounded-md">
+          <button
+            onClick={() => setShowAddButton(true)}
+            className="bg-black text-white px-4 py-2 rounded-md"
+          >
             Create +
           </button>
         </div>
@@ -98,9 +61,9 @@ export default function Backlog() {
         {statuses.map((status) => (
           <div key={status} className="bg-blue-50 rounded-md p-4 min-h-[300px]">
             <h2 className="text-lg font-semibold mb-2 text-gray-700">
-              {status} ({dummyData[status].length})
+              {status} ({groupedBacklogs[status].length})
             </h2>
-            {dummyData[status].map((item, idx) => (
+            {groupedBacklogs[status].map((item, idx) => (
               <div
                 key={idx}
                 className="bg-white p-4 rounded shadow mb-3 text-left"
@@ -157,7 +120,7 @@ export default function Backlog() {
                   )}
                 </div>
                 <div className="w-full flex justify-end">
-                <i className='bx bxs-chat text-3xl'></i>
+                  <i className="bx bxs-chat text-3xl"></i>
                 </div>
                 <button className="text-xs text-gray-500 mt-2">+ Notes</button>
               </div>
@@ -165,7 +128,10 @@ export default function Backlog() {
           </div>
         ))}
       </div>
-      <AddBackLog isOpen={showAddButton} onClose={()=>setShowAddButton(false)}/>
+      <AddBackLog
+        isOpen={showAddButton}
+        onClose={() => setShowAddButton(false)}
+      />
     </div>
   );
 }
