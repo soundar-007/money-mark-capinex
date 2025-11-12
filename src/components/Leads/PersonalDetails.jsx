@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import InputFloating from "../InputFloating";
 import Button from "../Button";
 
-function PersonalDetails() {
+function PersonalDetails({ customer, handleUpdate }) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    pan: "",
-    uid: "",
-    fatherName: "",
-    motherName: "",
-    gender: "Male",
-    maritalStatus: "Single",
-    dob: "",
-    residenceType: "Owned",
-    qualification: "Graduate",
+    first_name: "",
+    last_name: "",
+    email: customer?.email || "",
+    pan: customer.pan,
+    uid: customer.uid,
+    father_name: customer.father_name,
+    mother_name: customer.mother_name,
+    gender: customer.gender,
+    marital_status: customer.marital_status,
+    dob: customer.dob,
+    residence_type: customer.residence_type,
+    qualification: customer.qualification,
   });
 
   const handleChange = (e) => {
@@ -23,30 +23,29 @@ function PersonalDetails() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Updated Customer:", formData);
-  };
-
   const handleInputFloatingChange = (name) => (value) => {
     handleChange({ target: { name, value } });
   };
 
+  const updatePersonalDetails = () => {
+    handleUpdate(formData);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 mt-3">
+    <form className="space-y-6 mt-3">
       <div className="flex flex-col gap-5">
         <InputFloating
           label="First Name"
           name="firstName"
-          value={formData.firstName}
-          onChange={handleInputFloatingChange("firstName")}
+          value={formData.first_name}
+          onChange={handleInputFloatingChange("first_name")}
           className="w-full"
         />
         <InputFloating
           label="Last Name"
           name="lastName"
-          value={formData.lastName}
-          onChange={handleInputFloatingChange("lastName")}
+          value={formData.last_name}
+          onChange={handleInputFloatingChange("last_name")}
           className="w-full"
         />
       </div>
@@ -80,8 +79,8 @@ function PersonalDetails() {
         <InputFloating
           label="Father Name"
           name="fatherName"
-          value={formData.fatherName}
-          onChange={handleInputFloatingChange("fatherName")}
+          value={formData.father_name}
+          onChange={handleInputFloatingChange("father_name")}
           className="w-full"
         />
       </div>
@@ -90,8 +89,8 @@ function PersonalDetails() {
         <InputFloating
           label="Mother Name"
           name="motherName"
-          value={formData.motherName}
-          onChange={handleInputFloatingChange("motherName")}
+          value={formData.mother_name}
+          onChange={handleInputFloatingChange("mother_name")}
           className="w-full"
         />
         <select
@@ -109,7 +108,7 @@ function PersonalDetails() {
       <div className="flex flex-col gap-5">
         <select
           name="maritalStatus"
-          value={formData.maritalStatus}
+          value={formData.marital_status}
           onChange={handleChange}
           className="w-full p-2 border "
         >
@@ -129,7 +128,7 @@ function PersonalDetails() {
       <div className="flex flex-col gap-5">
         <select
           name="residenceType"
-          value={formData.residenceType}
+          value={formData.residence_type}
           onChange={handleChange}
           className="w-full p-2 border "
         >
@@ -149,7 +148,7 @@ function PersonalDetails() {
       </div>
 
       <div className="flex justify-end">
-        <Button label={"Update"} />
+        <Button onClick={() => updatePersonalDetails()} label={"Update"} />
       </div>
     </form>
   );

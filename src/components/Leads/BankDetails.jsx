@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import InputFloating from "../InputFloating";
 import Button from "../Button";
 
-function BankDetails() {
+function BankDetails({ customer, handleUpdate }) {
   const [formData, setFormData] = useState({
-    ifcsCode: "",
-    nameAsPerBank: "",
-    customerAccountNumber: "",
-    bankName: "",
+    ifsc_code: customer.ifsc_code,
+    account_holder_name: customer.account_holder_name,
+    account_number: customer.account_number,
+    bank_name: customer.bank_name,
   });
 
   const handleChange = (e) => {
@@ -19,9 +19,13 @@ function BankDetails() {
     handleChange({ target: { name, value } });
   };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      console.log("Address Details:", formData);
+    };
+  const updateBankDetails = (e) => {
     e.preventDefault();
-    console.log("Bank Details:", formData);
+    handleUpdate(formData);
   };
 
   return (
@@ -29,37 +33,37 @@ function BankDetails() {
       <InputFloating
         label="IFCS Code"
         name="ifcsCode"
-        value={formData.ifcsCode}
-        onChange={handleInputFloatingChange("ifcsCode")}
+        value={formData.ifsc_code}
+        onChange={handleInputFloatingChange("ifsc_code")}
         className="w-full"
       />
 
       <InputFloating
         label="Name (As Per Bank)"
-        name="nameAsPerBank"
-        value={formData.nameAsPerBank}
-        onChange={handleInputFloatingChange("nameAsPerBank")}
+        name="account_holder_name"
+        value={formData.account_holder_name}
+        onChange={handleInputFloatingChange("account_holder_name")}
         className="w-full"
       />
 
       <InputFloating
         label="Account No."
-        name="customerAccountNumber"
-        value={formData.customerAccountNumber}
-        onChange={handleInputFloatingChange("customerAccountNumber")}
+        name="account_number"
+        value={formData.account_number}
+        onChange={handleInputFloatingChange("account_number")}
         className="w-full"
       />
 
       <InputFloating
         label="Bank Name"
-        name="bankName"
-        value={formData.bankName}
-        onChange={handleInputFloatingChange("bankName")}
+        name="bank_name"
+        value={formData.bank_name}
+        onChange={handleInputFloatingChange("bank_name")}
         className="w-full"
       />
 
       <div className="flex justify-end">
-        <Button label={"Update"} />
+        <Button onClick={(e) => updateBankDetails(e)} label={"Update"} />
       </div>
     </form>
   );

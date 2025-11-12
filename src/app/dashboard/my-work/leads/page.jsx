@@ -1,6 +1,5 @@
 import React from "react";
 import AdminStatusCard from "@/components/dashboardComponents/AdminBoard/AdminStatusCard";
-import CustomFilterDemo from "@/components/dashboardComponents/AdminBoard/DataTable";
 import LeadsComponent from "@/components/dashboardComponents/Leads/LeadsComponent";
 
 export default function Leads() {

@@ -5,11 +5,18 @@ import AddressDetails from "./AddressDetails";
 import BankDetails from "./BankDetails";
 
 const tabs = ["personal", "employment", "address", "bank"];
+const label = {
+  personal: "Personal Details",
+};
 
-const CustomerDetailsEditModal = ({ customer, onClose, isOpen }) => {
+const CustomerDetailsEditModal = ({
+  customer,
+  onClose,
+  isOpen,
+  handleUpdate,
+}) => {
   const [activeTab, setActiveTab] = useState("personal");
   const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     if (isOpen) {
       setVisible(true);
@@ -29,7 +36,7 @@ const CustomerDetailsEditModal = ({ customer, onClose, isOpen }) => {
         className={`fixed top-0 h-full bg-white shadow-lg p-8 overflow-y-auto transition-transform duration-300
           ${isOpen ? "translate-x-0" : "translate-x-full"}`}
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside dialog
-        style={{ maxHeight: "100vh", width:"auto" , right:"-2px"}}
+        style={{ maxHeight: "100vh", width: "auto", right: "-2px" }}
       >
         <button
           className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-lg"
@@ -43,11 +50,11 @@ const CustomerDetailsEditModal = ({ customer, onClose, isOpen }) => {
         <div className="mb-4 flex text-sm gap-10">
           <div>
             <strong>Customer Name:</strong>
-            <p>{customer?.name || "vikas MATHAPATI"}</p>
+            <p>{customer?.leadname || ""}</p>
           </div>
           <div>
             <strong>Mobile Number:</strong>
-            <p>{customer?.mobile || "9632123318"}</p>
+            <p>{customer?.mobile_number || ""}</p>
           </div>
         </div>
 
@@ -58,17 +65,14 @@ const CustomerDetailsEditModal = ({ customer, onClose, isOpen }) => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-2 ${
+                className={`pb-2 capitalize ${
                   activeTab === tab
                     ? "border-b-2 border-blue-500 text-blue-500"
                     : ""
                 }`}
                 type="button"
               >
-                {tab === "personal" && "Personal Details"}
-                {tab === "employment" && "Employment Details"}
-                {tab === "address" && "Address Details"}
-                {tab === "bank" && "Bank Details"}
+                {tab + " Details"}
               </button>
             ))}
           </div>
@@ -76,10 +80,18 @@ const CustomerDetailsEditModal = ({ customer, onClose, isOpen }) => {
 
         {/* Tab Content */}
         <div>
-          {activeTab === "personal" && <PersonalDetails />}
-          {activeTab === "employment" && <EmployeeDetails />}
-          {activeTab === "address" && <AddressDetails />}
-          {activeTab === "bank" && <BankDetails />}
+          {activeTab === "personal" && (
+            <PersonalDetails customer={customer} handleUpdate={handleUpdate} />
+          )}
+          {activeTab === "employment" && (
+            <EmployeeDetails customer={customer} handleUpdate={handleUpdate} />
+          )}
+          {activeTab === "address" && (
+            <AddressDetails customer={customer} handleUpdate={handleUpdate} />
+          )}
+          {activeTab === "bank" && (
+            <BankDetails customer={customer} handleUpdate={handleUpdate} />
+          )}
         </div>
       </div>
     </div>

@@ -9,8 +9,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return ( 
-    <ProtectedRoute requireAuth={false}>
+  return (
+    <ProtectedRoute requireAuth={true}>
       <DashboardWrapper>{children}</DashboardWrapper>
     </ProtectedRoute>
   );

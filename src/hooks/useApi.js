@@ -22,58 +22,37 @@ export const useLogin = () => {
   });
 };
 
-// Simple hook for getting user profile
 export const useProfile = () => {
   return useQuery({
     queryKey: ["profile"],
     queryFn: apiFunctions.getProfile,
-    enabled: !!localStorage.getItem("authToken"), 
-    retry: false, 
-    refetchOnWindowFocus: false, 
+    enabled: !!localStorage.getItem("authToken"),
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 };
 
-export const useLeads = (params = {}) => {
+export const useProducts = () => {
   return useQuery({
-    queryKey: ["leads", params],
-    queryFn: () => apiFunctions.getLeads(params),
+    queryKey: ["products"],
+    queryFn: apiFunctions.getProducts,
   });
 };
-
-export const useCreateLead = () => {
-  return useMutation({
-    mutationFn: apiFunctions.createLead,
-  });
-};
-
-export const useUpdateLead = () => {
-  return useMutation({
-    mutationFn: ({ id, data }) => apiFunctions.updateLead(id, data),
-  });
-};
-
-export const useDeleteLead = () => {
-  return useMutation({
-    mutationFn: apiFunctions.deleteLead,
-  });
-};
-
-export const useCampaigns = (params = {}) => {
+export const useTiers = () => {
   return useQuery({
-    queryKey: ["campaigns", params],
-    queryFn: () => apiFunctions.getCampaigns(params),
+    queryKey: ["tier"],
+    queryFn: apiFunctions.getTier,
   });
 };
-
-export const useCreateCampaign = () => {
-  return useMutation({
-    mutationFn: apiFunctions.createCampaign,
-  });
-};
-
-export const useUsers = (params = {}) => {
-  return useQuery({
-    queryKey: ["users", params],
-    queryFn: () => apiFunctions.getUsers(params),
-  });
-};
+// export const use = () => {
+//   return useQuery({
+//     queryKey: ["products"],
+//     queryFn: apiFunctions.getProducts,
+//   });
+// };
+// export const useProducts = () => {
+//   return useQuery({
+//     queryKey: ["products"],
+//     queryFn: apiFunctions.getProducts,
+//   });
+// };

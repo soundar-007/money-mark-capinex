@@ -1,3 +1,7 @@
+import CardList from "@/components/mywork/backend-processing/CardList";
+import StatusColumnList from "@/components/mywork/backend-processing/StatusColumnList";
+import TableList from "@/components/mywork/backend-processing/TableList";
+
 export default function BackendProcessing() {
   const statusColors = {
     Documentation: "#81592f",
@@ -368,107 +372,15 @@ export default function BackendProcessing() {
 
   return (
     <div className="flex flex-col">
-      <div className="overflow-x-auto w-full py-4 px-2 custom-scrollbar">
-        <div className="flex gap-4 w-max">
-          {dummyData.map((item, idx) => (
-            <div
-              key={idx}
-              className="min-w-[250px] bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg border-2 border-gray-400"
-            >
-              <div className="flex justify-center items-center mb-2 border-b-2 border-gray-400 px-4 py-2 text-center">
-                <h3 className="font-bold text-sm">{item.bankName}</h3>
-              </div>
-              <div className="p-5">
-                <div className="text-sm font-semibold border-b border-gray-500 text-center mb-2 ">
-                  {item.name}
-                </div>
-                <div className="text-gray-800 font-bold text-lg text-center border-b mb-2 border-gray-500 ">
-                  {item.amount}
-                </div>
-                <div className="text-xs text-gray-800 text-center border-b border-gray-500  mb-2">
-                  {item.min}
-                </div>
-                <div className="font-semibold text-sm mt-2 text-center border-b border-gray-500">
-                  {item.location}
-                </div>
-                <button className="mt-3 w-full bg-primary  text-white text-sm py-1 rounded-md">
-                  Accept
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* <div className="overflow-x-auto w-full py-4 px-2 custom-scrollbar">
+        <CardList cards={dummyData} />
+      </div> */}
       <div className="self-end">
         <i className="pi pi-list text-lg top- right-0 p-2 cursor-pointer"></i>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 w-full px-4">
-        {data.map((status, index) => (
-          <div
-            key={index}
-            className="border-r-0 px-4 flex flex-col bg-white dark:bg-gray-900"
-            style={{ borderRight: "1px solid" }}
-          >
-            {/* Column Header */}
-            <div
-              className="text-white font-semibold text-center p-2 rounded-md mb-2"
-              style={{ backgroundColor: statusColors[status.label] }}
-            >
-              {status.label} ({status.cards.length})
-            </div>
-
-            {/* Cards inside this column */}
-            <div className="flex flex-col gap-3 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 pr-2">
-              {status.cards.map((item, i) => (
-                <div
-                  key={i}
-                  className="rounded-md text-black  border-black-150 space-y-4"
-                  style={{
-                    background: status.cardColor
-                      ? status.cardColor
-                      : statusColors[status.label] + "22",
-                    border: "1px solid",
-                  }} // light tint of color
-                >
-                  <div className="text-md font-bold text-center border-b-1 p-2  mb-1 uppercase">
-                    {item.name}
-                  </div>
-
-                  <div className="px-4 space-y-4">
-                    <div className="flex justify-between text-sm font-semibold border-b-1 pb-1 mb-1 px-2">
-                      <span>
-                        ₹{item.amount.split(" ")[0] + item.amount.split(" ")[1]}
-                      </span>
-                      <span>{item.amount.split(" ")[2]}</span>
-                    </div>
-                    <div className="px-6">
-                      <div className="flex justify-center items-center pb-1 mb-1 px-2 text-xs font-semibold  border-b-1">
-                        <div className="flex gap-1 items-center">
-                          <span>{item.bankName}</span>
-                          <span>({item.productType || "PL"})</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between border-b-1 pb-1 mb-1 text-xs font-semibold">
-                      <span>{item.fatherName}</span>
-                      <span>{item.motherName}</span>
-                    </div>
-
-                    <div className="text-xs font-semibold text-center border-b-1 pb-1 mb-1">
-                      {item.location}
-                    </div>
-
-                    <div className="flex justify-center text-sm font-medium px-1 pb-2 gap-5">
-                      <div>{item.startTime}</div>
-                      <div>{item.endTime}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+      <div className="gap-4 w-full px-4">
+        {/* <StatusColumnList statusColors={statusColors} data={data} /> */}
+        <TableList />
       </div>
     </div>
   );

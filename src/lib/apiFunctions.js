@@ -23,42 +23,6 @@ export const apiFunctions = {
     return response;
   },
 
-  // Get leads
-  getLeads: async (params = {}) => {
-    const response = await api.get("/leads", { params });
-    return response.data;
-  },
-
-  // Create lead
-  createLead: async (leadData) => {
-    const response = await api.post("/leads", leadData);
-    return response.data;
-  },
-
-  // Update lead
-  updateLead: async (id, leadData) => {
-    const response = await api.put(`/leads/${id}`, leadData);
-    return response.data;
-  },
-
-  // Delete lead
-  deleteLead: async (id) => {
-    const response = await api.delete(`/leads/${id}`);
-    return response.data;
-  },
-
-  // Get campaigns
-  getCampaigns: async (params = {}) => {
-    const response = await api.get("/campaigns", { params });
-    return response.data;
-  },
-
-  // Create campaign
-  createCampaign: async (campaignData) => {
-    const response = await api.post("/campaigns", campaignData);
-    return response.data;
-  },
-
   // users
   getUsers: async (params = {}) => {
     const response = await api.get("/users", { params });
@@ -173,11 +137,11 @@ export const apiFunctions = {
     const response = await api.put(`/users/${userId}`);
     return response.data?.data;
   },
-  makeActive:async(param)=>{
-     const response = await api.put(`/users/${param.id}/status`,param);
+  makeActive: async (param) => {
+    const response = await api.put(`/users/${param.id}/status`, param);
     return response.data?.data;
   },
-  resetPassword:async(userId)=>{
+  resetPassword: async (userId) => {
     const response = await api.get(`/users/${userId}/access_code`);
     return response.data?.data;
   },
@@ -246,6 +210,143 @@ export const apiFunctions = {
   },
   assignQueue: async (param) => {
     const response = await api.put(`dialers/users`, param);
+    return response.data.data;
+  },
+
+  // Get leads
+  getLeads: async (leadId) => {
+    const response = await api.get(`/leads`);
+    return response.data.data;
+  },
+  getLeadsDetails: async (leadId) => {
+    const response = await api.get(`/leads/${leadId}`);
+    return response.data.data;
+  },
+
+  // Create lead
+  createLead: async (leadData) => {
+    const response = await api.post("/leads", leadData);
+    return response.data;
+  },
+
+  createLeadCustomer: async (params) => {
+    const response = await api.post("/leads/customers", params);
+    return response.data.data;
+  },
+
+  // Update lead
+  updateLead: async (id, leadData) => {
+    const response = await api.put(`/leads/${id}`, leadData);
+    return response.data.data;
+  },
+
+  // Delete lead
+  deleteLead: async (id) => {
+    const response = await api.delete(`/leads/${id}`);
+    return response.data.data;
+  },
+
+  // Get campaigns
+  getCampaigns: async (params = {}) => {
+    const response = await api.get("/campaigns", { params });
+    return response.data;
+  },
+
+  // Create campaign
+  createCampaign: async (campaignData) => {
+    const response = await api.post("/campaigns", campaignData);
+    return response.data;
+  },
+
+  //backlogs
+  getBacklogs: async () => {
+    const response = await api.get("/backlogs");
+    return response.data.data;
+  },
+  createBacklogs: async (param) => {
+    const response = await api.post("/backlog", param);
+    return response.data.data;
+  },
+  getProducts: async () => {
+    const response = await api.post("/filter-choices?filter=product_types");
+    return response.data.data;
+  },
+  getLocations: async () => {
+    const response = await api.post("/filter-choices?filter=product_types");
+    return response.data.data;
+  },
+  getTier: async () => {
+    const response = await api.post("/filter-choices?filter=tiers");
+    return response.data.data;
+  },
+  getLeadStatuses: async () => {
+    const response = await api.post("/filter-choices?filter=lead_statuses");
+    return response.data.data;
+  },
+  getBackendStatuses: async () => {
+    const response = await api.post("/filter-choices?filter=backend_statuses");
+    return response.data.data;
+  },
+  getGenders: async () => {
+    const response = await api.post("/filter-choices?filter=genders");
+    return response.data.data;
+  },
+  getMaritalStatuses: async () => {
+    const response = await api.post("/filter-choices?filter=marital_statuses");
+    return response.data.data;
+  },
+  getResidenceTypes: async () => {
+    const response = await api.post("/filter-choices?filter=residence_types");
+    return response.data.data;
+  },
+  getEmploymentTypes: async () => {
+    const response = await api.post("/filter-choices?filter=employment_types");
+    return response.data.data;
+  },
+  getAddressProofTypes: async () => {
+    const response = await api.post(
+      "/filter-choices?filter=address_proof_types"
+    );
+    return response.data.data;
+  },
+  getPropertyCategories: async () => {
+    const response = await api.post(
+      "/filter-choices?filter=property_categories"
+    );
+    return response.data.data;
+  },
+  getDocumentTypes: async () => {
+    const response = await api.post("/filter-choices?filter=document_types");
+    return response.data.data;
+  },
+  getCampaignTypes: async () => {
+    const response = await api.post("/filter-choices?filter=campaign_types");
+    return response.data.data;
+  },
+  getCampaignStatuses: async () => {
+    const response = await api.post("/filter-choices?filter=campaign_statuses");
+    return response.data.data;
+  },
+  getCallDispositions: async () => {
+    const response = await api.post("/filter-choices?filter=call_dispositions");
+    return response.data.data;
+  },
+  getCallStatuses: async () => {
+    const response = await api.post("/filter-choices?filter=call_statuses");
+    return response.data.data;
+  },
+  getProcessingStatuses: async () => {
+    const response = await api.post(
+      "/filter-choices?filter=processing_statuses"
+    );
+    return response.data.data;
+  },
+  getRejectReasons: async () => {
+    const response = await api.post("/filter-choices?filter=reject_reasons");
+    return response.data.data;
+  },
+  getDesignations: async () => {
+    const response = await api.post("/filter-choices?filter=designations");
     return response.data.data;
   },
 };

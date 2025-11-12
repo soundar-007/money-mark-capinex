@@ -4,13 +4,15 @@ import { Badge } from "primereact/badge";
 import { Avatar } from "primereact/avatar";
 import { useAuth } from "@/context/AuthContext";
 import BreadcrumbWrapper from "./Wrappers/BreadcrumpWrapper";
+import NotificationModal from "./NotificationModal";
+import Menu from "./Menu";
 
 export default function Header() {
   const isLiveCall = true;
   const { user, logout } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  console.log(user);
+  const [notificationsModal,setNotificationsModal] = useState(false)
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -91,7 +93,7 @@ export default function Header() {
           </div>
 
           {/* Notification Bell & Avatar (Always Visible) */}
-          <div className="relative">
+          <div onClick={() => setNotificationsModal(true)} className="relative">
             <i className="bx bx-bell p-overlay-badge text-2xl cursor-pointer">
               <Badge
                 value="2"
@@ -112,28 +114,12 @@ export default function Header() {
             />
 
             {/* User Dropdown */}
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border">
-                <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                  <p className="font-medium">
-                    {user?.display_name || user?.email || "User"}
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    {user?.role_name || "Member"}
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    logout();
-                    setShowDropdown(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  <i className="bx bx-log-out mr-2"></i>
-                  Logout
-                </button>
-              </div>
-            )}
+            <Menu
+              user={user}
+              showMenu={showDropdown}
+              setShowMenu={setShowDropdown}
+              logout={logout}
+            />
           </div>
         </div>
       </div>
@@ -141,6 +127,10 @@ export default function Header() {
         <i className="bx bx-bulb text-sm" style={{ color: "yellow" }}></i> The
         only way to do great work is to love what you do - Steve Jobs
       </p>
+      <NotificationModal
+        isOpen={notificationsModal}
+        onClose={() => setNotificationsModal(false)}
+      />
     </div>
   );
 }
