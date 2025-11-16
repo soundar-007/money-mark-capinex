@@ -246,6 +246,26 @@ export const apiFunctions = {
     return response.data.data;
   },
 
+  commercials: async (param, leadId) => {
+    const response = await api.patch(`/leads/${leadId}/commercials`, param);
+    return response.data.data;
+  },
+
+  submitToBank: async (param) => {
+    const response = await api.post(`/leads/${param}/submit-to-bank`);
+    return response.data.data;
+  },
+  selectLoan: async (param,leadId) => {
+    const response = await api.post(`/leads/${leadId}/bank-organization/select`,param);
+    return response.data.data;
+  },
+  withdraw:async(leadId)=>{
+      const response = await api.post(
+        `/leads/${leadId}/bank-organization/withdraw`
+      );
+      return response.data.data;
+  },
+
   // Get campaigns
   getCampaigns: async (params = {}) => {
     const response = await api.get("/campaigns", { params });
@@ -264,20 +284,65 @@ export const apiFunctions = {
     return response.data.data;
   },
   createBacklogs: async (param) => {
-    const response = await api.post("/backlog", param);
+    const response = await api.post("/backlogs", param);
     return response.data.data;
   },
-  getProducts: async () => {
-    const response = await api.post("/filter-choices?filter=product_types");
+
+  // backendProcessing
+  getBackendProcessing: async () => {
+    const response = await api.get("/backend-processing");
     return response.data.data;
+  },
+  getSingleBackendProcessing: async (id) => {
+    const response = await api.get(`/backend-processing/${id}`);
+    return response.data.data;
+  },
+  rejectLoan: async (id,param) => {
+    const response = await api.post(`/backend-processing/${id}/reject`,param);
+    return response.data.data;
+  },
+  updateFinalLoan: async (id) => {
+    const response = await api.patch(`/backend-processing/${id}/final-loan`,param);
+    return response.data.data;
+  },
+  documentUpload: async (param,leadId) => {
+    const response = await api.post(`/leads/${leadId}/documents`, param);
+    return response.data.data;
+  },
+  backendProcessingStatus: async (param) => {
+    const response = await api.patch(
+      `/backend-processing/${param.id}/backend-status`,
+      param
+    );
+    return response.data.data;
+  },
+  rejectLoan: async (param) => {
+    const response = await api.patch(
+      `/backend-processing/${param.id}/reject`,
+      param
+    );
+    return response.data.data;
+  },
+  finalLoan: async (param) => {
+    const response = await api.patch(
+      `/backend-processing/${param.id}/final-loan`,
+      param
+    );
+    return response.data.data;
+  },
+
+  // global apis
+  getProducts: async () => {
+    const response = await api.get("/filter-choices?filter=product_types");
+    return response.data.data?.choices;
   },
   getLocations: async () => {
-    const response = await api.post("/filter-choices?filter=product_types");
+    const response = await api.get("/districts?type=prime");
     return response.data.data;
   },
   getTier: async () => {
-    const response = await api.post("/filter-choices?filter=tiers");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=tiers");
+    return response.data.data?.choices;
   },
   getLeadStatuses: async () => {
     const response = await api.post("/filter-choices?filter=lead_statuses");
@@ -288,65 +353,65 @@ export const apiFunctions = {
     return response.data.data;
   },
   getGenders: async () => {
-    const response = await api.post("/filter-choices?filter=genders");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=genders");
+    return response.data.data?.choices;
   },
   getMaritalStatuses: async () => {
-    const response = await api.post("/filter-choices?filter=marital_statuses");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=marital_statuses");
+    return response.data.data?.choices;
   },
   getResidenceTypes: async () => {
-    const response = await api.post("/filter-choices?filter=residence_types");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=residence_types");
+    return response.data.data?.choices;
   },
   getEmploymentTypes: async () => {
-    const response = await api.post("/filter-choices?filter=employment_types");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=employment_types");
+    return response.data.data?.choices;
   },
   getAddressProofTypes: async () => {
-    const response = await api.post(
+    const response = await api.get(
       "/filter-choices?filter=address_proof_types"
     );
-    return response.data.data;
+    return response.data.data?.choices;
   },
   getPropertyCategories: async () => {
-    const response = await api.post(
+    const response = await api.get(
       "/filter-choices?filter=property_categories"
     );
-    return response.data.data;
+    return response.data.data?.choices;
   },
   getDocumentTypes: async () => {
-    const response = await api.post("/filter-choices?filter=document_types");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=document_types");
+    return response.data.data?.choices;
   },
   getCampaignTypes: async () => {
-    const response = await api.post("/filter-choices?filter=campaign_types");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=campaign_types");
+    return response.data.data?.choices;
   },
   getCampaignStatuses: async () => {
-    const response = await api.post("/filter-choices?filter=campaign_statuses");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=campaign_statuses");
+    return response.data.data?.choices;
   },
   getCallDispositions: async () => {
-    const response = await api.post("/filter-choices?filter=call_dispositions");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=call_dispositions");
+    return response.data.data?.choices;
   },
   getCallStatuses: async () => {
-    const response = await api.post("/filter-choices?filter=call_statuses");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=call_statuses");
+    return response.data.data?.choices;
   },
   getProcessingStatuses: async () => {
-    const response = await api.post(
+    const response = await api.get(
       "/filter-choices?filter=processing_statuses"
     );
-    return response.data.data;
+    return response.data.data?.choices;
   },
   getRejectReasons: async () => {
-    const response = await api.post("/filter-choices?filter=reject_reasons");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=reject_reasons");
+    return response.data.data?.choices;
   },
   getDesignations: async () => {
-    const response = await api.post("/filter-choices?filter=designations");
-    return response.data.data;
+    const response = await api.get("/filter-choices?filter=designations");
+    return response.data.data?.choices;
   },
 };

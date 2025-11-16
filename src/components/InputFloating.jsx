@@ -8,7 +8,7 @@ const InputFloating = ({
   type = "text",
   className = "w-full sm:w-1/4",
   placeholder = "",
-  ref = "",
+  ref =null,
   disabled = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -28,7 +28,7 @@ const InputFloating = ({
         {label}
       </label>
       <input
-        // ref={ref}
+        ref={ref}
         type={type}
         inputMode="numeric"
         className={`placeholder-black-150 w-full rounded-md py-3 px-4 focus:outline-none border tracking-widest 
@@ -37,7 +37,7 @@ const InputFloating = ({
               ? "border-primary bg-primary/10"
               : "border-gray-400 bg-white"
           }`}
-        value={value}
+        value={value ?? ""}
         autoComplete="new-password"
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsFocused(true)}

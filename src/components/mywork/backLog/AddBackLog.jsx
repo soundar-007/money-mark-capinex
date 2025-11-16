@@ -10,7 +10,21 @@ function AddBackLog({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const handleAdd = () => {};
+  const handleAdd = (e) => {
+    e.preventDefault();
+    if (!name.trim() || !phone.trim()) {
+      return;
+    }
+    const params = {
+      name,
+      phone_number: phone,
+    };
+    create(params, {
+      onSuccess: () => {
+        onClose();
+      },
+    });
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
@@ -27,12 +41,12 @@ function AddBackLog({ isOpen, onClose }) {
           </button>
         </div>
 
-        <form className="flex flex-col gap-5">
+        <form onSubmit={handleAdd} className="flex flex-col gap-5">
           <div className="flex items-center gap-2">
             <div>
               <InputFloating
-                //    value={name}
-                //    onChange={setName}
+                value={name}
+                onChange={setName}
                 placeholder="Name"
                 type="text"
                 maxLength={10}
@@ -42,8 +56,8 @@ function AddBackLog({ isOpen, onClose }) {
             </div>
             <div>
               <InputFloating
-                //    value={hostname}
-                //    onChange={setHostname}
+                value={phone}
+                onChange={setPhone}
                 placeholder="Mobile"
                 type="text"
                 required

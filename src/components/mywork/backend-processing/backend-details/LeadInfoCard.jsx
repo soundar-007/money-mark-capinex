@@ -34,7 +34,7 @@ const LeadInfoCard = ({
         <div className="grid grid-cols-6 items-center mb-1">
           <span className="col-span-2 font-semibold">Bank:</span>
           <span className="col-span-4 flex items-center">
-            {productInfo.bank}
+            {productInfo?.selected_bank}
             {/* {productInfo.appUrlIcon && (
               // <img
               //   src={productInfo.appUrlIcon}
@@ -48,15 +48,15 @@ const LeadInfoCard = ({
         </div>
         <div className="grid grid-cols-6 items-center mb-1">
           <span className="col-span-2 font-semibold">Product:</span>
-          <span className="col-span-4">{productInfo.product}</span>
+          <span className="col-span-4">{productInfo?.product_display}</span>
         </div>
         <div className="grid grid-cols-6 items-center mb-1">
           <span className="col-span-2 font-semibold">Corporate:</span>
-          <span className="col-span-4">{productInfo.corporate}</span>
+          <span className="col-span-4">{productInfo?.selected_scheme}</span>
         </div>
         <div className="grid grid-cols-6 items-center">
           <span className="col-span-2 font-semibold">Category:</span>
-          <span className="col-span-4">{productInfo.category}</span>
+          <span className="col-span-4">{productInfo?.category}</span>
         </div>
       </div>
 
@@ -73,11 +73,11 @@ const LeadInfoCard = ({
         </div>
         <div className="grid grid-cols-6 items-center mb-1">
           <span className="col-span-2 font-semibold">Lead Owner:</span>
-          <span className="col-span-4">{leadOwner.name}</span>
+          <span className="col-span-4">{leadOwner?.name}</span>
         </div>
         <div className="grid grid-cols-6 items-center">
           <span className="col-span-2 font-semibold">Mobile:</span>
-          <span className="col-span-4">{leadOwner.mobile}</span>
+          <span className="col-span-4">{leadOwner?.mobile}</span>
         </div>
       </div>
     </div>

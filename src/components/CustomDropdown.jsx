@@ -25,7 +25,8 @@ const CustomDropdown = ({
       </label>
 
       {/* Dropdown with Flexbox */}
-      <div className="flex items-center mt-1">
+      <div
+        className="flex items-center mt-1"      >
         <select
           className="w-full  rounded-md py-2 px-3 focus:outline-none bg-white appearance-none cursor-pointer"
           value={value}
@@ -48,9 +49,9 @@ const CustomDropdown = ({
               key={index}
               value={option.value}
               disabled={option.value === ""}
-               className={`cursor-pointer border-none px-4 py-2 hover:bg-gray-100 ${
-                  option.value === value ? "bg-gray-200" : ""
-                }`}
+              className={`cursor-pointer border-none px-4 py-2 hover:bg-gray-100 ${
+                option.value === value ? "bg-gray-200" : ""
+              }`}
             >
               {option.name}
             </option>

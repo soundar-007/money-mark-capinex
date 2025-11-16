@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFunctions } from "../lib/apiFunctions";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
@@ -40,19 +40,45 @@ export const useProducts = () => {
 };
 export const useTiers = () => {
   return useQuery({
-    queryKey: ["tier"],
+    queryKey: ["tiers"],
     queryFn: apiFunctions.getTier,
   });
 };
-// export const use = () => {
-//   return useQuery({
-//     queryKey: ["products"],
-//     queryFn: apiFunctions.getProducts,
-//   });
-// };
-// export const useProducts = () => {
-//   return useQuery({
-//     queryKey: ["products"],
-//     queryFn: apiFunctions.getProducts,
-//   });
-// };
+export const useLocations = () => {
+  return useQuery({
+    queryKey: ["locations"],
+    queryFn: apiFunctions.getLocations,
+  });
+};
+export const useGenders = () => {
+  return useQuery({
+    queryKey: ["genders"],
+    queryFn: apiFunctions.getGenders,
+  });
+};
+export const useMarital = () => {
+  return useQuery({
+    queryKey: ["marital_status"],
+    queryFn: apiFunctions.getMaritalStatuses,
+  });
+};
+export const useDocumentTypes = () => {
+  return useQuery({
+    queryKey: ["document_types"],
+    queryFn: apiFunctions.getDocumentTypes,
+  });
+};
+export const useDocumentUpload = (leadId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params) => apiFunctions.documentUpload(params,leadId),
+    onSuccess: () => {
+      toast.success("Document uploaded successfully");
+      queryClient.invalidateQueries(["lead", leadId]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};

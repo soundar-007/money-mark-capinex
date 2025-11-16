@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import ManualEntry from "@/components/ManualEntry";
-import { bankComparisonData } from "@/dummyData/bankData";
 import UploadDocumentModal from "@/components/Leads/UploadDocumentModal";
 import FollowUpModal from "@/components/Leads/FollowUpModal";
 import ShareModal from "@/components/Leads/ShareModal";
@@ -13,15 +12,10 @@ import CustomEditor from "@/components/dashboardComponents/ColdCalling/Editor";
 import CustomerDetailsEditModal from "@/components/Leads/CustomerDetailsEditModal";
 import InputFloating from "@/components/InputFloating";
 import CustomDropdown from "@/components/CustomDropdown";
-import { getLeadDetails, updateLead } from "@/hooks/useLeads";
+import { getLeadDetails, updateLead, useCommercials, useSelectLoan ,useWithdraw , useSubmit } from "@/hooks/useLeads";
 import Spinner from "@/components/Spinner";
-import { useProducts } from "@/hooks/useApi";
-
-const customer = {
-  name: "AKASH MATHAPATI",
-  leadStatus: "CustomerDiscussion",
-  mobile: "9632123318",
-};
+import { useLocations, useProducts, useTiers } from "@/hooks/useApi";
+import toast from "react-hot-toast";
 
 const actions = [
   { icon: "/assets/chat.png", label: "Chat" },
@@ -42,27 +36,6 @@ const actions = [
   },
 ];
 
-// Dummy data for dropdowns
-let products = [
-  { value: 1, name: "Personal Loan" },
-  { value: 2, name: "Business Loan" },
-  { value: 3, name: "Home Loan" },
-  { value: 4, name: "Vehicle Loan" },
-];
-
-const locations = [
-  { value: 1, name: "Mumbai (Mumbai)" },
-  { value: 2, name: "Delhi (Delhi)" },
-  { value: 3, name: "Bangalore (Bangalore)" },
-  { value: 4, name: "Chennai (Chennai)" },
-];
-
-const tiers = [
-  { value: 1, name: "Tier 1" },
-  { value: 2, name: "Tier 2" },
-  { value: 3, name: "Tier 3" },
-];
-
 export default function CustomerDetails() {
   const [formData, setFormData] = useState({});
 
@@ -72,23 +45,59 @@ export default function CustomerDetails() {
   const [shareModal, setShareModal] = useState(false);
   const [passOnModal, setPassOnModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [productId, setProductId] = useState("");
-  const [locationId, setLocationId] = useState("");
-  const [tierId, setTierId] = useState("");
+  const [tiers, setTiers] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const params = useParams();
   const Id = params.leadId;
+  const { data: product } = useProducts();
+  const { data: location } = useLocations();
+  const { data: tier } = useTiers();
   const { data, error, isLoading } = getLeadDetails(Id);
-  // const { data: product } = useProducts();
   const { mutate, isPending } = updateLead(Id);
+  const {mutate:selectLoan} = useSelectLoan(Id);
+
+  const [tierId, setTierId] = useState(formData?.tier_id);
+  const [locationId, setLocationId] = useState(formData?.location);
+  const [productId, setProductId] = useState(formData?.product_type_id);
+  const { mutate: createCommercials , isPending:commericalsLoading } = useCommercials(Id);
+  const [bankComparisonData, setBankComparisonData] = useState([]);
+  const {mutate:withDrawBank} = useWithdraw(Id)
+  const {mutate:submit} = useSubmit(Id)
+
   const handleUpdate = (params) => {
     mutate(params);
   };
 
   useEffect(() => {
     setFormData(data);
+    setTierId(data?.tier_id);
+    setLocationId(data?.location_id);
+    setProductId(data?.product_type_id);
   }, [data]);
 
+  useEffect(() => {
+    setProducts(() => {
+      return product?.map((el) => {
+        return { name: el.label, value: el.id };
+      });
+    });
+  }, [product]);
+  useEffect(() => {
+    setLocations(() => {
+      return location?.map((el) => {
+        return { name: el.label, value: el.id };
+      });
+    });
+  }, [location]);
+  useEffect(() => {
+    setTiers(() => {
+      return tier?.map((el) => {
+        return { name: el.label, value: el.id };
+      });
+    });
+  }, [tier]);
   if (isLoading) return <Spinner className={"w-20 h-20 border-t-5 border-2"} />;
 
   const handleActionClick = (label) => {
@@ -109,6 +118,52 @@ export default function CustomerDetails() {
         break;
     }
   };
+
+  const handleCommericals = () => {
+    if (
+      !productId ||
+      !tierId ||
+      !locationId ||
+      !formData.expected_tenure ||
+      !formData.net_salary ||
+      !formData.loan_amount
+    ) {
+      console.log(
+        productId,
+        tierId,
+        locationId,
+        formData.expected_tenure,
+        formData.net_salary,
+        formData.required_amount
+      );
+      toast.error("Fill Mandatory Details");
+      return;
+    }
+    const params = {
+      ...formData,
+      product_id: productId,
+      tier_id: tierId,
+      location_id: locationId,
+    };
+    createCommercials(params,{onSuccess:(data)=>{
+      if(data.bank_organizations){
+        setBankComparisonData(data.bank_organizations)
+      }
+     }});
+  };
+
+  const handleLoan = (id)=>{
+    const params = {
+     bank_organization_id:id
+    }
+    selectLoan(params,{onSuccess:()=>{
+      setBankComparisonData([])
+    }})
+  }
+
+  const handleWithdraw = ()=>{
+    withDrawBank()
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -143,7 +198,9 @@ export default function CustomerDetails() {
               />
             </div>
             <p className="text-gray-700 text-sm font-medium">
-              {formData?.leadname}
+              {(formData?.first_name || "FNAME") +
+                "" +
+                (formData?.last_name || "LNAME")}
             </p>
           </div>
           <div>
@@ -167,6 +224,7 @@ export default function CustomerDetails() {
             onClose={() => setIsManualEntryOpen(false)}
           />
           <UploadDocumentModal
+            leadId={Id}
             isOpen={documentModal}
             onClose={() => setDocumentModal(false)}
           />
@@ -244,7 +302,7 @@ export default function CustomerDetails() {
             {/* Products Dropdown */}
             <div className="relative">
               <CustomDropdown
-                label="Products"
+                label="Products*"
                 options={products}
                 value={productId}
                 onChange={setProductId}
@@ -257,8 +315,8 @@ export default function CustomerDetails() {
               <InputFloating
                 label="Required Amount*"
                 type="number"
-                value={formData?.required_amount}
-                onChange={handleInputFloatingChange("required_amount")}
+                value={formData?.loan_amount}
+                onChange={handleInputFloatingChange("loan_amount")}
                 className="w-full"
               />
             </div>
@@ -294,7 +352,7 @@ export default function CustomerDetails() {
               <InputFloating
                 label="Corporate"
                 type="text"
-                value={formData?.corporate}
+                value={formData?.company}
                 onChange={handleInputFloatingChange("corporate")}
                 className="w-full"
               />
@@ -303,10 +361,10 @@ export default function CustomerDetails() {
             {/* Current Obligations */}
             <div>
               <InputFloating
-                label="Current Obligations"
-                type="text"
-                value={formData?.current_obligations}
-                onChange={handleInputFloatingChange("current_obligations")}
+                label="Current Obligation"
+                type="number"
+                value={formData?.current_obligation}
+                onChange={handleInputFloatingChange("current_obligation")}
                 className="w-full"
               />
             </div>
@@ -336,7 +394,7 @@ export default function CustomerDetails() {
             {/* Location Dropdown */}
             <div className="relative">
               <CustomDropdown
-                label="Locations"
+                label="Locations*"
                 options={locations}
                 value={locationId}
                 onChange={setLocationId}
@@ -345,14 +403,16 @@ export default function CustomerDetails() {
             </div>
 
             {/* Get Commercials Button */}
-            <div className="flex items-end">
+         { !formData.backend_status &&  <div className="flex items-end">
               <button
+                disabled={commericalsLoading}
+                onClick={handleCommericals}
                 type="submit"
                 className="w-full bg-black text-white font-medium py-2 px-6 rounded-md transition duration-200"
               >
-                Get Commercials
+                {commericalsLoading ? <Spinner /> : "Get Commercials"}
               </button>
-            </div>
+            </div>}
           </div>
         </form>
       </div>
@@ -360,68 +420,69 @@ export default function CustomerDetails() {
       {/* Bank Comparison Table */}
       <div className="mt-6 shadow-lg p-4">
         <div className="bank-container mt-2 space-y-3">
-          <table className="table backend-list-table w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Bank
-                </th>
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Backend
-                </th>
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Category
-                </th>
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Corporate
-                </th>
-                <th className="text-right p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Loan Amount
-                </th>
-                <th className="text-right p-3 border-bborder-gray-200 text-sm text-gray-700">
-                  Proposed Rate
-                </th>
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Loan Account
-                </th>
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
-                  Status
-                </th>
-                <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {bankComparisonData.map((bank) => (
-                <tr key={bank.id} className="backend_New hover:bg-gray-50">
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
-                    <span className="text-blue-600 font-medium">
-                      {bank.bankName}
-                    </span>
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
-                    {bank.backend}
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
-                    {bank.category}
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
-                    {bank.corporate}
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100 text-right">
-                    {bank.loanAmount}
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100 text-right">
-                    {bank.proposedRate}
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
-                    {bank.loanAccount}
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
-                    <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                      {bank.status}
-                    </span>
-                  </td>
-                  <td className="p-3 border-b-gray text-xs border-gray-100">
+          {formData?.bank_selections?.length > 0 && (
+            <table className="table backend-list-table w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Bank
+                  </th>
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Backend
+                  </th>
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Category
+                  </th>
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Corporate
+                  </th>
+                  <th className="text-right p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Loan Amount
+                  </th>
+                  <th className="text-right p-3 border-bborder-gray-200 text-sm text-gray-700">
+                    Proposed Rate
+                  </th>
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Loan Account
+                  </th>
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700">
+                    Status
+                  </th>
+                  <th className="text-left p-3 border-b border-gray-200 text-sm text-gray-700"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData?.bank_selections?.map((bank) => (
+                  <tr key={bank.id} className="backend_New hover:bg-gray-50">
+                    <td className="p-3 border-b-gray text-xs border-gray-100">
+                      <span className="text-blue-600 font-medium">
+                        {bank?.bank_display}
+                      </span>
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100">
+                      {bank?.backend}
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100">
+                      {bank.category}
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100">
+                      {bank?.company_name}
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100 text-right">
+                      {bank?.loan_amount}
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100 text-right">
+                      {bank?.proposed_rate}
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100">
+                      {bank?.loan_account}
+                    </td>
+                    <td className="p-3 border-b-gray text-xs border-gray-100">
+                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                        {bank?.status || "New"}
+                      </span>
+                    </td>
+                    {/* <td className="p-3 border-b-gray text-xs border-gray-100">
                     <div className="flex items-center space-x-4">
                       <img
                         src="/assets/kyc.png"
@@ -433,11 +494,12 @@ export default function CustomerDetails() {
                         Withdraw
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </td> */}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
           {/* Action Buttons */}
           <div className="flex justify-end mt-4">
@@ -448,15 +510,38 @@ export default function CustomerDetails() {
               >
                 Manual Entry
               </button>
-              <button className="px-4 py-2  text-white rounded-md text-sm font-semibold bg-black transition duration-200">
-                Submit to Bank
-              </button>
-              <button
+              {formData?.bank_selections?.length > 0 &&
+                !formData?.backend_status && (
+                  <button
+                    onClick={() => submit()}
+                    className="px-4 py-2 text-white rounded-md text-sm font-semibold bg-black transition duration-200"
+                  >
+                    Submit to Bank
+                  </button>
+                )}
+
+            { !formData.backend_status && <button
                 style={{ backgroundColor: "#f99" }}
                 className="px-4 py-2 text-sm rounded-md text-white"
               >
                 Future Work
-              </button>
+              </button>}
+              {/* <div className="flex items-center space-x-4"> */}
+              {/* <img
+                  src="/assets/kyc.png"
+                  title="Click to initiate whatsapp with customer for application details and upload documents"
+                  className="h-7 w-7 cursor-pointer hover:opacity-80"
+                  alt="KYC"
+                /> */}
+              {formData?.bank_selections?.length > 0 && (
+                <button
+                  onClick={handleWithdraw}
+                  className="px-3 py-1 text-sm rounded-md border-1 transition duration-200"
+                >
+                  Withdraw
+                </button>
+              )}
+              {/* </div> */}
             </div>
           </div>
         </div>
@@ -464,7 +549,7 @@ export default function CustomerDetails() {
         {/* Bank Cards Section */}
         <div className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
-            {bankComparisonData.map((bank) => (
+            {bankComparisonData?.map((bank) => (
               <div
                 key={bank.id}
                 className="bank-cards bg-white rounded-lg shadow-md border border-gray-200 p-5 relative"
@@ -476,50 +561,55 @@ export default function CustomerDetails() {
                   />
                 </div>
                 <h2 className="mb-4 text-center font-semibold text-gray-800">
-                  {bank.bankName}
+                  {bank.bank}
                 </h2>
 
                 <div>
                   <div>
                     <table className="w-full">
-                      <tr className="bank-heading eligible-heading bg-green-250 p-2 rounded">
-                        <td
-                          colSpan="4"
-                          className="text-left  font-semibold text-green-350 p-2"
-                        >
-                          BANK OPEN RATES
-                        </td>
-                      </tr>
-                      <tr className="bg-white">
-                        <td className="first-td border-b-gray text-sm font-semibold text-gray-700 py-2">
-                          EMI
-                        </td>
-                        <td className="second-td border-b-gray text-right text-sm font-semibold text-gray-900">
-                          {bank.cardData.emi}
-                        </td>
-                        <td className="first-td font-semibold text-gray-700  text-sm py-2">
-                          PF
-                        </td>
-                        <td className="second-td  text-sm text-right font-semibold text-gray-900">
-                          {bank.cardData.pf}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="first-td text-sm font-semibold text-gray-700 py-2 border-b-gray">
-                          ROI
-                        </td>
-                        <td className="second-td border-b-gray  text-sm text-right font-semibold text-gray-900">
-                          {bank.cardData.roi}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="first-td border-b-gray text-sm font-semibold text-gray-700 py-2">
-                          Eligibility
-                        </td>
-                        <td className="second-td border-b-gray text-sm text-right font-semibold text-gray-900">
-                          {bank.cardData.eligibility}
-                        </td>
-                      </tr>
+                      <tbody>
+                        <tr className="bank-heading eligible-heading bg-green-250 p-2 rounded">
+                          <td
+                            colSpan="4"
+                            className="text-left font-semibold text-green-350 p-2"
+                          >
+                            {bank?.company_name}
+                          </td>
+                        </tr>
+
+                        <tr className="bg-white">
+                          <td className="first-td border-b-gray text-sm font-semibold text-gray-700 py-2">
+                            EMI
+                          </td>
+                          <td className="second-td border-b-gray text-right text-sm font-semibold text-gray-900">
+                            {bank?.emi}
+                          </td>
+                          <td className="first-td font-semibold text-gray-700 text-sm py-2">
+                            PF
+                          </td>
+                          <td className="second-td text-sm text-right font-semibold text-gray-900">
+                            {bank?.pf}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="first-td text-sm font-semibold text-gray-700 py-2 border-b-gray">
+                            ROI
+                          </td>
+                          <td className="second-td border-b-gray text-sm text-right font-semibold text-gray-900">
+                            {bank?.roi}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="first-td border-b-gray text-sm font-semibold text-gray-700 py-2">
+                            Eligibility
+                          </td>
+                          <td className="second-td border-b-gray text-sm text-right font-semibold text-gray-900">
+                            {bank?.eligibility}
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -527,6 +617,7 @@ export default function CustomerDetails() {
                 <div className="mt-4 flex justify-between items-center">
                   <div className="w-1/5">
                     <button
+                      onClick={() => handleLoan(bank.id)}
                       style={{ border: "2px solid gray" }}
                       className="w-full text-black-150 font-semibold py-1 px-3 rounded-xl"
                     >

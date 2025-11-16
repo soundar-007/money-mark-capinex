@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputFloating from "../InputFloating";
 import Button from "../Button";
+import { useGenders, useMarital } from "@/hooks/useApi";
+import CustomDropdown from "../CustomDropdown";
 
 function PersonalDetails({ customer, handleUpdate }) {
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    first_name: customer.first_name || "FNAME",
+    last_name: customer.last_name || "LNAME",
     email: customer?.email || "",
     pan: customer.pan,
     uid: customer.uid,
@@ -17,6 +19,12 @@ function PersonalDetails({ customer, handleUpdate }) {
     residence_type: customer.residence_type,
     qualification: customer.qualification,
   });
+  const [genderId, setGenderId] = useState("");
+  const [gender, setGender] = useState([]);
+  const { data: genders } = useGenders();
+  const [maritalId, setMaritalId] = useState("");
+  const [marital, setMarital] = useState([]);
+  const { data: maritals } = useMarital();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +35,22 @@ function PersonalDetails({ customer, handleUpdate }) {
     handleChange({ target: { name, value } });
   };
 
-  const updatePersonalDetails = () => {
+  const updatePersonalDetails = (e) => {
+    e.preventDefault();
     handleUpdate(formData);
   };
+
+  useEffect(() => {
+    setGender(() => {
+      return genders?.map((el) => ({ name: el.label, id: el.id }));
+    });
+  }, [genders]);
+
+  useEffect(() => {
+    setMarital(() => {
+      return maritals?.map((el) => ({ name: el.label, id: el.id }));
+    });
+  }, [maritals]);
 
   return (
     <form className="space-y-6 mt-3">
@@ -93,28 +114,23 @@ function PersonalDetails({ customer, handleUpdate }) {
           onChange={handleInputFloatingChange("mother_name")}
           className="w-full"
         />
-        <select
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-          className="w-full p-2 border "
-        >
-          <option>Male</option>
-          <option>Female</option>
-          <option>Other</option>
-        </select>
+        <CustomDropdown
+          label="Gender"
+          options={gender}
+          value={genderId}
+          onChange={setGenderId}
+          className="w-full"
+        />
       </div>
 
       <div className="flex flex-col gap-5">
-        <select
-          name="maritalStatus"
-          value={formData.marital_status}
-          onChange={handleChange}
-          className="w-full p-2 border "
-        >
-          <option>Single</option>
-          <option>Married</option>
-        </select>
+        <CustomDropdown
+          label="Marital Status"
+          options={marital}
+          value={maritalId}
+          onChange={setMaritalId}
+          className="w-full"
+        />
         <InputFloating
           //   label="DOB"
           name="dob"
@@ -148,7 +164,7 @@ function PersonalDetails({ customer, handleUpdate }) {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={() => updatePersonalDetails()} label={"Update"} />
+        <Button onClick={(e) => updatePersonalDetails(e)} label={"Update"} />
       </div>
     </form>
   );
