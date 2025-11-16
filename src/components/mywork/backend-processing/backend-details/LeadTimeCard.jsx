@@ -1,14 +1,5 @@
-const LeadTimeCard = () => {
-  const leadTime = {
-    totalTime: "0.00",
-    waitingTime: "0.07",
-    documentation: "0.00",
-    loggedIn: "0.00",
-    pending: "0.00",
-    underwriting: "0.00",
-    approved: "0.00",
-    abnd: "0.00",
-  };
+const LeadTimeCard = ({leadTime}) => {
+  if(!leadTime) return 
 
   return (
     <div className="bg-white p-4 rounded shadow">
@@ -35,10 +26,10 @@ const LeadTimeCard = () => {
 
       {/* Lead time rows */}
       <div className="mt-2 space-y-2">
-        {Object.entries(leadTime).map(([key, value]) => (
+        { Object?.entries(leadTime)?.map(([key, value]) => (
           <div key={key} className="grid grid-cols-5 items-center py-1">
             <span className="col-span-3 font-medium text-gray-700 capitalize">
-              {key.replace(/([A-Z])/g, " $1") + ":"}
+              {key.replace(/[_]/g, " ") + ":"}
             </span>
             <span className="col-span-2 text-right font-semibold text-gray-800">
               {value}

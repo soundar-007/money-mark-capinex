@@ -50,11 +50,14 @@ const CustomerDetailsEditModal = ({
         <div className="mb-4 flex text-sm gap-10">
           <div>
             <strong>Customer Name:</strong>
-            <p>{customer?.leadname || ""}</p>
+            <p>
+              {(customer?.first_name || "FNAME") +
+                (customer?.last_name || "LNAME")}
+            </p>
           </div>
           <div>
             <strong>Mobile Number:</strong>
-            <p>{customer?.mobile_number || ""}</p>
+            <p>{customer?.phone_number || ""}</p>
           </div>
         </div>
 

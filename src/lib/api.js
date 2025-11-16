@@ -11,6 +11,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+   if (config.data instanceof FormData) {
+     delete config.headers["Content-Type"];
+   }
   if (config.url?.includes("/auth/token/refresh")) {
     return config;
   }

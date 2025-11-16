@@ -4,10 +4,10 @@ const useGroupedBacklogs = (data) => {
   const groupedData = useMemo(() => {
     if (!Array.isArray(data)) {
       return {
-        ToDo: [],
-        Discussion: [],
-        Followup: [],
-        Closed: [],
+        todo: [],
+        discussion: [],
+        followup: [],
+        closed: [],
       };
     }
 
@@ -31,14 +31,14 @@ const useGroupedBacklogs = (data) => {
     };
 
     const newGroupedData = {
-      ToDo: [],
-      Discussion: [],
-      Followup: [],
-      Closed: [],
+      todo: [],
+      discussion: [],
+      followup: [],
+      closed: [],
     };
 
     data.forEach((item) => {
-      const key = capitalize(item.action || "");
+      const key = item.action || "";
       if (key in newGroupedData) {
         newGroupedData[key].push({
           name: item.name || "",

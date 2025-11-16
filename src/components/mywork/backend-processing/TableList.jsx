@@ -1,72 +1,13 @@
 "use client";
+import { useBackendProcessing } from "@/hooks/useBackendProcess";
 import { useRouter } from "next/navigation";
 
 function TableList() {
+const { data } = useBackendProcessing();
+const groupedData = groupedBackend(data);
+
   const router = useRouter();
-  const groupedData = [
-    {
-      status: "Documentation",
-      color: "#854C1D",
-      rows: [
-        {
-          customerName: "Mr. BUKKE RAVEENDRA NAIK",
-          requiredAmount: "₹30.00 Lac",
-          bankName: "AXIS Bank",
-          productType: "PL",
-          backend: "Akash M",
-          leadOwner: "JagruthiB",
-          location: "Tirupati(AP)",
-          connection: "",
-          totalTime: "4941h",
-        },
-        {
-          customerName: "BAIRU PRAVEEN",
-          requiredAmount: "₹7.00 Lac",
-          bankName: "HDFC Bank",
-          productType: "PL",
-          backend: "Akash M",
-          leadOwner: "VaishnaviWFH",
-          location: "Hyderabad(TS)",
-          connection: "",
-          totalTime: "4974h",
-        },
-      ],
-    },
-    {
-      status: "Filed",
-      color: "#6E3630",
-      rows: [
-        {
-          customerName: "John Doe",
-          requiredAmount: "₹5.00 Lac",
-          bankName: "TATA Capital",
-          productType: "PL",
-          backend: "Harshitha",
-          leadOwner: "Harshitha",
-          location: "Bangalore(KA)",
-          connection: "",
-          totalTime: "5473h",
-        },
-      ],
-    },
-    {
-      status: "Approved",
-      color: "#2B593F",
-      rows: [
-        {
-          customerName: "TESTING",
-          requiredAmount: "₹5.00 Lac",
-          bankName: "HDFC Bank",
-          productType: "PL",
-          backend: "Akash M",
-          leadOwner: "Akash M",
-          location: "Bangalore(KA)",
-          connection: "",
-          totalTime: "6052h",
-        },
-      ],
-    },
-  ];
+
 
   return (
     <div className="space-y-8 max-h-[600px] overflow-y-auto px-4">
@@ -115,9 +56,11 @@ function TableList() {
                 <tr
                   key={idx}
                   className={
-                    idx % 2 === 0 ? "bg-white text-xs" : "bg-gray-50 text-xs"
+                    idx % 2 === 0
+                      ? "bg-white text-xs cursor-pointer"
+                      : "bg-gray-200 text-xs cursor-pointer"
                   }
-                  onClick={() => router.push(`backend-processing/${23}`)}
+                  onClick={() => router.push(`backend-processing/${row.id}`)}
                 >
                   <td className="p-2 border border-gray-300 text-sm">
                     {row.customerName}
@@ -151,3 +94,43 @@ function TableList() {
 }
 
 export default TableList;
+
+
+const statusColors = {
+  Documentation: "#854C1D",
+  Filed: "#6E3630",
+  Approved: "#2B593F",
+};
+
+function groupedBackend(data) {
+  if (!data) return [];
+
+  const grouped = data.reduce((acc, item) => {
+    const status = item.lead_backend_status || "Unknown";
+
+    if (!acc[status]) {
+      acc[status] = {
+        status,
+        color: statusColors[status] || "#000",
+        rows: [],
+      };
+    }
+
+    acc[status].rows.push({
+      id:item.id,
+      customerName: item.lead_full_name,
+      requiredAmount: item.loan_amount ? `₹${Number(item.loan_amount).toLocaleString()}` : "-",
+      bankName: item.selected_bank,
+      productType: item.product,
+      backend: item.submitted_by_name,
+      leadOwner: item.leadname,
+      location: item.location,
+      connection: item.processing_status_display,
+      totalTime: "",
+    });
+
+    return acc;
+  }, {});
+
+  return Object.values(grouped);
+}

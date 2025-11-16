@@ -9,7 +9,7 @@ export default function Backlog() {
   const [activeTab, setActiveTab] = useState("User");
   const [showAddButton, setShowAddButton] = useState(false);
   const tabs = ["User", "Org"];
-  const statuses = ["ToDo", "Discussion", "Followup", "Closed"];
+  const statuses = ["todo", "discussion", "followup", "closed"];
   const { data, isLoading } = useBackLogs();
   const groupedBacklogs = useGroupedBacklogs(data || []);
   if (isLoading) {
@@ -60,10 +60,10 @@ export default function Backlog() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {statuses.map((status) => (
           <div key={status} className="bg-blue-50 rounded-md p-4 min-h-[300px]">
-            <h2 className="text-lg font-semibold mb-2 text-gray-700">
-              {status} ({groupedBacklogs[status].length})
+            <h2 className="text-lg font-semibold mb-2 text-gray-700 capitalize">
+              {status} ({groupedBacklogs[status]?.length})
             </h2>
-            {groupedBacklogs[status].map((item, idx) => (
+            {groupedBacklogs[status]?.map((item, idx) => (
               <div
                 key={idx}
                 className="bg-white p-4 rounded shadow mb-3 text-left"
@@ -100,7 +100,7 @@ export default function Backlog() {
                 </div>
 
                 <div className="mt-2 flex items-center gap-2">
-                  {item.source === "Calling" ? (
+                  {item.action === "todo" ? (
                     <a href="#" className="text-blue-500 underline text-sm">
                       Start Discussion
                     </a>

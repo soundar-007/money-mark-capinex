@@ -46,6 +46,64 @@ export const getLeadDetails = (leadId) => {
     queryFn: () => apiFunctions.getLeadsDetails(leadId),
   });
 };
+
+export const useCommercials = (leadId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params) => apiFunctions.commercials(params, leadId),
+    onSuccess: () => {
+      // toast.success("");
+      queryClient.invalidateQueries(["lead", leadId]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};
+export const useSelectLoan = (leadId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params) => apiFunctions.selectLoan(params, leadId),
+    onSuccess: () => {
+      toast.success("Selected Successfully");
+      queryClient.invalidateQueries(["lead", leadId]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};
+export const useWithdraw = (leadId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => apiFunctions.withdraw(leadId),
+    onSuccess: () => {
+      toast.success("Withdraw Successfully Done");
+      queryClient.invalidateQueries(["lead", leadId]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};
+export const useSubmit = (leadId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => apiFunctions.submitToBank(leadId),
+    onSuccess: () => {
+      toast.success("Submited to bank successfully");
+      queryClient.invalidateQueries(["lead", leadId]);
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+};
+
 // export const updateLeads = (leadId)=>{
 //  const queryClient = useQueryClient();
 //  return useMutation({
