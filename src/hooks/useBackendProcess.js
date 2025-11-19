@@ -15,3 +15,33 @@ export const useSingleBackend = (id) => {
     queryFn: () => apiFunctions.getSingleBackendProcessing(id),
   });
 };
+
+export const useFinalLoan = (id)=>{
+   const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (params) => apiFunctions.updateFinalLoan(id,params),
+      onSuccess: () => {
+        toast.success("Final Loan Updated");
+        queryClient.invalidateQueries(["backend_processing", id]);
+      },
+      onError: (err) => {
+        const res = formatBackendErrors(err);
+        toast.error(res);
+      },
+    });
+}
+
+export const useUpdateStatus = (id)=>{
+   const queryClient = useQueryClient();
+   return useMutation({
+     mutationFn: (params) => apiFunctions.backendProcessingStatus(id, params),
+     onSuccess: () => {
+       toast.success("Status changed successfully");
+       queryClient.invalidateQueries(["backend_processing", id]);
+     },
+     onError: (err) => {
+       const res = formatBackendErrors(err);
+       toast.error(res);
+     },
+   });
+}

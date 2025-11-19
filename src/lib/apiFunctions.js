@@ -287,6 +287,10 @@ export const apiFunctions = {
     const response = await api.post("/backlogs", param);
     return response.data.data;
   },
+  statusChange:async (param)=>{
+    const response = await api.patch(`/backlogs/${param.id}`,{action:param.action});
+    return response.data.data
+  },
 
   // backendProcessing
   getBackendProcessing: async () => {
@@ -301,17 +305,17 @@ export const apiFunctions = {
     const response = await api.post(`/backend-processing/${id}/reject`,param);
     return response.data.data;
   },
-  updateFinalLoan: async (id) => {
-    const response = await api.patch(`/backend-processing/${id}/final-loan`,param);
+  updateFinalLoan: async (id,param) => {
+    const response = await api.patch(`/backend-processing/${id}/final-loan/`,param);
     return response.data.data;
   },
   documentUpload: async (param,leadId) => {
     const response = await api.post(`/leads/${leadId}/documents`, param);
     return response.data.data;
   },
-  backendProcessingStatus: async (param) => {
+  backendProcessingStatus: async (id,param) => {
     const response = await api.patch(
-      `/backend-processing/${param.id}/backend-status`,
+      `/backend-processing/${id}/backend-status/`,
       param
     );
     return response.data.data;
@@ -323,14 +327,6 @@ export const apiFunctions = {
     );
     return response.data.data;
   },
-  finalLoan: async (param) => {
-    const response = await api.patch(
-      `/backend-processing/${param.id}/final-loan`,
-      param
-    );
-    return response.data.data;
-  },
-
   // global apis
   getProducts: async () => {
     const response = await api.get("/filter-choices?filter=product_types");

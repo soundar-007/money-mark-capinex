@@ -25,3 +25,18 @@ export const createBackLogs = () => {
     },
   });
 };
+
+export const useStatusChange = ()=>{
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params) => apiFunctions.statusChange(params),
+    onSuccess: () => {
+      toast.success("Updated Successfully");
+      queryClient.invalidateQueries("backlogs_all");
+    },
+    onError: (err) => {
+      const res = formatBackendErrors(err);
+      toast.error(res);
+    },
+  });
+}

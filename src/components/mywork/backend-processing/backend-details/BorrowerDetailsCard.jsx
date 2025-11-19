@@ -5,12 +5,39 @@ import UploadDocumentModal from "@/components/Leads/UploadDocumentModal";
 import {
   AtSignIcon,
   ChevronDown,
+  DownloadIcon,
   EditIcon,
   MenuIcon,
+  Trash2Icon,
   UploadCloudIcon,
 } from "lucide-react";
 import React, { useState } from "react";
 import EmailModal from "./EmailModal";
+import { useFinalLoan, useUpdateStatus } from "@/hooks/useBackendProcess";
+
+const statusMapping = {
+  Documentation: {
+    btn: "Submit to bank",
+    status: "Filed",
+  },
+  Filed: {
+    btn: "Approve",
+    status: "Approved",
+  },
+  Approved: {
+    btn: "Disburse",
+    status: "Disbursed",
+  },
+};
+
+function downloadFile(fileUrl, fileName) {
+  const link = document.createElement("a");
+  link.href = fileUrl;
+  link.download = fileName || "";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
 const BorrowerDetailsCard = ({borrower}) => {
   if(!borrower) return
@@ -20,19 +47,14 @@ const BorrowerDetailsCard = ({borrower}) => {
   const [menuOpen2, setMenuOpen2] = useState(false);
   const [selectedTab, setSelectedTab] = useState("tab1");
   const [formData, setFormData] = useState({
-    loan_account_no: "",
-    final_loan_amount: "",
-    final_rate: "",
-    final_tenure: "",
-    emi: "",
-    amount_requested: "",
-    gender: "",
-    proposed_emi: "",
-    proposed_rate: "",
-    location: "",
-    expected_tenure: "",
-    net_salary: "",
+    loan_account_number: borrower.loan_account_number,
+    final_loan_amount: borrower.final_loan_amount,
+    final_rate: borrower.final_rate,
+    final_tenure: borrower.final_tenure,
+    final_emi: borrower.final_emi,
   });
+  const {mutate} = useFinalLoan(borrower.id)
+  const {mutate:changeStatus,isPending:statusLoading} = useUpdateStatus(borrower.id)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -51,11 +73,23 @@ const BorrowerDetailsCard = ({borrower}) => {
     setSelectedTab(tab);
   };
 
+  const handleUpdateFinal = ()=>{
+    mutate(formData)
+  }
+  const handleUpdateStatus = ()=>{
+    const param = {
+      backend_status:statusMapping[borrower?.lead_backend_status]?.status
+    }
+ 
+    changeStatus(param)
+  }
+
   return (
     <div className="bg-white p-4 rounded shadow space-y-4">
       {/* Header Row */}
       <div className="flex border-b border-gray-200 mb-4 items-center">
         <UploadDocumentModal
+          leadId={borrower?.lead}
           isOpen={isUploadDocumentModalOpen}
           onClose={() => setIsUploadDocumentModalOpen(false)}
         />
@@ -73,18 +107,25 @@ const BorrowerDetailsCard = ({borrower}) => {
             selectedTab == "tab2" ? " border-black" : ""
           }`}
         >
-          Documents (1)
+          Documents ({borrower?.lead_documents?.length || 0})
         </div>
         {selectedTab == "tab1" && (
           <div className="w-1/2 flex justify-end items-center gap-3 pt-2">
             {/* Submit to bank + dropdown */}
             <div className="relative">
               <button
-                className="bg-black text-white px-3 py-1 rounded inline-flex items-center space-x-2"
+                disabled={statusLoading}
+                onClick={() => handleUpdateStatus()}
+                className="bg-black text-xs font-semibold text-white px-3 py-1 rounded inline-flex items-center space-x-2"
                 type="button"
               >
-                <span>Submit to bank</span>
-                <ChevronDown onClick={() => setMenuOpen1((v) => !v)} />
+                <span>{statusMapping[borrower?.lead_backend_status]?.btn}</span>
+                <ChevronDown
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen1((v) => !v);
+                  }}
+                />
               </button>
               {menuOpen1 && (
                 <div
@@ -167,7 +208,8 @@ const BorrowerDetailsCard = ({borrower}) => {
 
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4 text-gray-700 text-sm">
             <div>
-              <span className="font-semibold">Mobile:</span> {borrower?.phone_number}
+              <span className="font-semibold">Mobile:</span>{" "}
+              {borrower?.phone_number}
             </div>
             <div>
               <span className="font-semibold">Amount Requested:</span>{" "}
@@ -205,8 +247,8 @@ const BorrowerDetailsCard = ({borrower}) => {
           >
             <InputFloating
               label="Loan Account No"
-              value={formData.loan_account_no}
-              onChange={handleInputFloatingChange("loan_account_no")}
+              value={formData.loan_account_number}
+              onChange={handleInputFloatingChange("loan_account_number")}
               className="w-full mt-4"
             />
             <InputFloating
@@ -230,12 +272,37 @@ const BorrowerDetailsCard = ({borrower}) => {
             <InputFloating
               label="EMI"
               className="w-full"
-              value={formData.emi}
-              onChange={handleInputFloatingChange("emi")}
+              value={formData.final_emi}
+              onChange={handleInputFloatingChange("final_emi")}
             />
             {/* <Button className="bg-black-150" label="Update" /> */}
-            <button className="bg-gray-300">Update</button>
+            {["Documentation,Filed"].includes(borrower.lead_backend_status) && (
+              <button onClick={handleUpdateFinal} className="bg-gray-300">
+                Update
+              </button>
+            )}
           </form>
+        </div>
+      )}
+      {selectedTab == "tab2" && (
+        <div className="flex flex-col gap-3">
+          {borrower.lead_documents?.map((doc, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between gap-4 p-3 border rounded shadow-sm hover:bg-gray-50"
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-medium">
+                  {doc?.document_type_display} Proof
+                </span>
+              </div>
+
+              <div className="flex gap-3">
+               <DownloadIcon onClick={()=>downloadFile(doc.filename,doc.file_url)} className="text-blue-500 cursor-pointer"/>
+                <Trash2Icon className="text-red-500"/>
+              </div>
+            </div>
+          ))}
         </div>
       )}
       <EmailModal

@@ -1,12 +1,15 @@
 "use client";
+import Spinner from "@/components/Spinner";
 import { useBackendProcessing } from "@/hooks/useBackendProcess";
 import { useRouter } from "next/navigation";
 
 function TableList() {
-const { data } = useBackendProcessing();
+const { data , isLoading} = useBackendProcessing();
 const groupedData = groupedBackend(data);
-
-  const router = useRouter();
+const router = useRouter();
+if(isLoading){
+  return <Spinner className={"w-20 h-20 border-t-5 border-2"} />;
+}
 
 
   return (
@@ -131,6 +134,9 @@ function groupedBackend(data) {
 
     return acc;
   }, {});
+ const ORDER = ["Documentation", "Filed", "Approved", "Disbursed"];
 
-  return Object.values(grouped);
+ const finalResult = ORDER.map((status) => grouped[status])
+   .filter(Boolean);   
+  return finalResult;
 }

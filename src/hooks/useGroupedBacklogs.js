@@ -41,6 +41,7 @@ const useGroupedBacklogs = (data) => {
       const key = item.action || "";
       if (key in newGroupedData) {
         newGroupedData[key].push({
+          id:item.backlog_id,
           name: item.name || "",
           phone: (item.phone_number || "").replace("+91", ""),
           source: item.type || "",
