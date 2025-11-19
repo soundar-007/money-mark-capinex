@@ -122,7 +122,7 @@ export default function CustomerDetails() {
   const handleCommericals = () => {
     if (
       !productId ||
-      !tierId ||
+      tierId ==null ||
       !locationId ||
       !formData.expected_tenure ||
       !formData.net_salary ||
@@ -134,7 +134,7 @@ export default function CustomerDetails() {
         locationId,
         formData.expected_tenure,
         formData.net_salary,
-        formData.required_amount
+        formData.loan_amount
       );
       toast.error("Fill Mandatory Details");
       return;
@@ -353,7 +353,7 @@ export default function CustomerDetails() {
                 label="Corporate"
                 type="text"
                 value={formData?.company}
-                onChange={handleInputFloatingChange("corporate")}
+                onChange={handleInputFloatingChange("company")}
                 className="w-full"
               />
             </div>
@@ -403,7 +403,7 @@ export default function CustomerDetails() {
             </div>
 
             {/* Get Commercials Button */}
-         { !formData.backend_status &&  <div className="flex items-end">
+         { !formData?.backend_status &&  <div className="flex items-end">
               <button
                 disabled={commericalsLoading}
                 onClick={handleCommericals}
@@ -520,7 +520,7 @@ export default function CustomerDetails() {
                   </button>
                 )}
 
-            { !formData.backend_status && <button
+            { !formData?.backend_status && <button
                 style={{ backgroundColor: "#f99" }}
                 className="px-4 py-2 text-sm rounded-md text-white"
               >
@@ -619,7 +619,7 @@ export default function CustomerDetails() {
                     <button
                       onClick={() => handleLoan(bank.id)}
                       style={{ border: "2px solid gray" }}
-                      className="w-full text-black-150 font-semibold py-1 px-3 rounded-xl"
+                      className="w-full text-black-150 font-semibold py-1 px-3 rounded-xl cursor-pointer"
                     >
                       Select
                     </button>
