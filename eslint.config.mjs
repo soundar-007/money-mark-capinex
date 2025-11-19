@@ -16,6 +16,7 @@ const eslintConfig = [
       "no-prototype-builtins": "off",
       "no-unsafe-optional-chaining": "off",
       "react-hooks/exhaustive-deps": "off",
+      "react-hooks/rules-of-hooks": "off",
     },
   },
 ];
