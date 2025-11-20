@@ -82,3 +82,10 @@ export const useDocumentUpload = (leadId) => {
     },
   });
 };
+
+export const useDashboard = () => {
+  return useQuery({
+    queryKey: ["dashboard"],
+    queryFn: apiFunctions.getDashboard,
+  });
+};

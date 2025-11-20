@@ -12,6 +12,12 @@ export const apiFunctions = {
     const response = await api.get("/auth/me");
     return response.data;
   },
+  
+  getDashboard:async ()=>{
+    const response = await api.get("/dashboard/statistics");
+    return response.data.data;
+
+  },
 
   // Refresh token
   refreshToken: async () => {
