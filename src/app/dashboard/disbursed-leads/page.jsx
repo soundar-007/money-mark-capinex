@@ -1,4 +1,5 @@
 "use client";
+import { maskPhoneNumber } from "@/lib/masking";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -173,7 +174,7 @@ export default function FilterSearchUI() {
                     <td className="p-3 border">{lead.leadOwner}</td>
                     <td className="p-3 border">{lead.customer}</td>
                     <td className="p-3 border">{lead.emi}</td>
-                    <td className="p-3 border">{lead.mobile}</td>
+                    <td className="p-3 border">{maskPhoneNumber(lead.mobile)}</td>
                     <td className="p-3 border">{lead.loanAmount}</td>
                     <td className="p-3 border">{lead.roi}</td>
                     <td className="p-3 border">{lead.bank}</td>

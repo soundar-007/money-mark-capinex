@@ -1,3 +1,5 @@
+import { maskPhoneNumber } from "@/lib/masking";
+
 const LeadInfoCard = ({
   leadStatus,
   backendStatus,
@@ -77,7 +79,7 @@ const LeadInfoCard = ({
         </div>
         <div className="grid grid-cols-6 items-center">
           <span className="col-span-2 font-semibold">Mobile:</span>
-          <span className="col-span-4">{leadOwner?.mobile}</span>
+          <span className="col-span-4">{maskPhoneNumber(leadOwner?.mobile)}</span>
         </div>
       </div>
     </div>

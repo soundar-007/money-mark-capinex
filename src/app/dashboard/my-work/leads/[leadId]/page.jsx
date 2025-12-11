@@ -16,6 +16,7 @@ import { getLeadDetails, updateLead, useCommercials, useSelectLoan ,useWithdraw 
 import Spinner from "@/components/Spinner";
 import { useLocations, useProducts, useTiers } from "@/hooks/useApi";
 import toast from "react-hot-toast";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const actions = [
   { icon: "/assets/chat.png", label: "Chat" },
@@ -216,7 +217,7 @@ export default function CustomerDetails() {
               Mobile Number
             </span>
             <p className="font-medium text-gray-700 text-sm">
-              {formData?.phone_number}
+              {maskPhoneNumber(formData?.phone_number)}
             </p>
           </div>
           <ManualEntry

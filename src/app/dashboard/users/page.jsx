@@ -14,6 +14,7 @@ import Loader from "@/components/Loader";
 import { toast } from "react-hot-toast";
 import Spinner from "@/components/Spinner";
 import ResetPassword from "@/components/users/ResetPassword";
+import { maskPhoneNumber } from "@/lib/masking";
 const UserManagement = () => {
   const [mobile, setMobile] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -157,7 +158,7 @@ const UserManagement = () => {
               <tr key={user.id} className="border-b border-gray-300">
                 <td className="py-4 whitespace-nowrap px-4">{idx + 1}</td>
                 <td className="py-4 whitespace-nowrap px-4">
-                  {user.mobile_number}
+                  {maskPhoneNumber(user.mobile_number)}
                 </td>
                 <td className="py-4 whitespace-nowrap px-4">
                   {user.display_name}

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import CustomDropdown from "../CustomDropdown";
 import InputFloating from "../InputFloating";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const TableComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -159,7 +160,7 @@ const TableComponent = () => {
                   {item.id}
                 </td>
                 <td className="px-4 py-2 border-r-2 whitespace-nowrap border-white text-center">
-                  {item.mobile}
+                  {maskPhoneNumber(item.mobile)}
                 </td>
                 <td className="px-4 py-2 border-r-2 whitespace-nowrap border-white text-center">
                   {item.campaign}

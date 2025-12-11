@@ -6,6 +6,7 @@ import { SquarePen } from "lucide-react";
 import { useUpdateUser, useUserDetails } from "@/hooks/useUsers";
 import Spinner from "../Spinner";
 import Loader from "../Loader";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const UserDetails = ({ userId }) => {
   const { data, isLoading } = useUserDetails(userId);
@@ -108,7 +109,7 @@ const UserDetails = ({ userId }) => {
           <div>
             <div className="flex items-center space-x-2">
               <span className="font-semibold">
-                {userInfo?.display_name} | {userInfo?.mobile_number} |
+                {userInfo?.display_name} | {maskPhoneNumber(userInfo?.mobile_number)} |
               </span>
               <SquarePen
                 className="w-6 h-6 cursor-pointer"
