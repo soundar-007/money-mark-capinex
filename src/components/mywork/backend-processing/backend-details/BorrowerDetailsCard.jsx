@@ -14,6 +14,7 @@ import {
 import React, { useState } from "react";
 import EmailModal from "./EmailModal";
 import { useFinalLoan, useUpdateStatus } from "@/hooks/useBackendProcess";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const statusMapping = {
   Documentation: {
@@ -209,7 +210,7 @@ const BorrowerDetailsCard = ({borrower}) => {
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4 text-gray-700 text-sm">
             <div>
               <span className="font-semibold">Mobile:</span>{" "}
-              {borrower?.phone_number}
+              {maskPhoneNumber(borrower?.phone_number)}
             </div>
             <div>
               <span className="font-semibold">Amount Requested:</span>{" "}

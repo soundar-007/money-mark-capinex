@@ -8,6 +8,7 @@ import Loader from "../Loader";
 import Button from "../Button";
 import { toast } from "react-hot-toast";
 import { useUpdateUser } from "@/hooks/useUsers";
+import { maskPhoneNumber } from "@/lib/masking";
 
 function DialerUsers() {
   const { data: tableData, isLoading } = useDialers();
@@ -104,7 +105,7 @@ function DialerUsers() {
             >
               <td className="py-4 whitespace-nowrap px-4">{user.id}</td>
               <td className="py-4 whitespace-nowrap px-4">
-                {user.mobile_number}
+                {maskPhoneNumber(user.mobile_number)}
               </td>
               <td className="py-4 whitespace-nowrap px-4">
                 {user.display_name}

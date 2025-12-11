@@ -1,3 +1,5 @@
+import { maskPhoneNumber } from "@/lib/masking";
+
 const MENU_ITEMS = [
   "Reset Password",
   "Dialer Info",
@@ -14,7 +16,7 @@ export default function Menu({ user, showMenu, logout, setShowMenu }) {
     <div className="absolute right-5 mt-2 w-52 bg-white rounded-md shadow-lg py-1 px-2 z-50 border">
       <div className="px-4 py-2 text-sm text-gray-700 border-b">
         <p className="font-medium">
-          {user?.display_name || user?.email || "User"}
+          {maskPhoneNumber(user?.display_name) || user?.email || "User"}
         </p>
         <p className="text-gray-500 text-xs">{user?.role_name || "Member"}</p>
       </div>

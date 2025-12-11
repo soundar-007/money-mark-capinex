@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const MyMissedCall = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -133,7 +134,7 @@ const MyMissedCall = () => {
                   {item.id}
                 </td>
                 <td className="px-4 py-2 border-r-2 border-white text-center">
-                  {item.mobile}
+                  {maskPhoneNumber(item.mobile)}
                 </td>
                 <td className="px-4 py-2 border-r-2 border-white text-center">
                   {item.campaign}

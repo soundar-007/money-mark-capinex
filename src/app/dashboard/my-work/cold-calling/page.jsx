@@ -6,6 +6,7 @@ import CallLogs from "@/components/dashboardComponents/ColdCalling/CallLogsTable
 import DateTimePickerModal from "@/components/dashboardComponents/ColdCalling/DateTimePicker";
 import PauseReason from "@/components/dashboardComponents/ColdCalling/PauseReason";
 import CallSpy from "@/components/mywork/coldCalling/CallSpy";
+import { maskPhoneNumber } from "@/lib/masking";
 const CallDashboard = () => {
   const [checked, setChecked] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -77,7 +78,7 @@ const CallDashboard = () => {
             <tbody>
               <tr>
                 <td className="text-center row-span-2">
-                  <h3 className="text-center mt-2">9665633693</h3>
+                  <h3 className="text-center mt-2">{maskPhoneNumber(999999934)}</h3>
                   <span className="text-gray-400 text-center">Outgoing</span>
                 </td>
                 <td className="text-center">50000</td>

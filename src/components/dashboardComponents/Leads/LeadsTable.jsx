@@ -1,5 +1,6 @@
 "use client";
 import { useLeads } from "@/hooks/useLeads";
+import { maskPhoneNumber } from "@/lib/masking";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -23,7 +24,7 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
       {
         header: "Mobile Number",
         key: "mobileNumber",
-        render: (row) => row.phone_number,
+        render: (row) => maskPhoneNumber(row.phone_number),
       },
       {
         header: "Lead Owner",
@@ -67,7 +68,7 @@ function LeadsTable({ selectedDetail, selectedStatus, selectedLoan }) {
       {
         header: "Mobile Number",
         key: "mobilenumber",
-        render: (row) => row.phone_number,
+        render: (row) => maskPhoneNumber(row.phone_number),
       },
       {
         header: "Lead Owner",

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const CallLogs = () => {
   // Sample Data
@@ -53,7 +54,7 @@ const CallLogs = () => {
                 {completedCalls.map((call, index) => (
                   <tr key={call.id} className={`${index % 2 === 0 ? "bg-gray-100" : "bg-gray-300"} text-center`}>
                     <td className="p-3 border-r-2">{index + 1}</td>
-                    <td className="p-3 border-r-2">{call.mobile}</td>
+                    <td className="p-3 border-r-2">{maskPhoneNumber(call.mobile)}</td>
                     <td className="p-3 border-r-2">{call.name}</td>
                     <td className="p-3 border-r-2">{call.disposition}</td>
                     <td className="p-3">{call.time}</td>
@@ -101,7 +102,7 @@ const CallLogs = () => {
                     } ${index % 2 === 0 ? "bg-gray-100" : "bg-gray-300"}`}
                   >
                     <td className="p-2 border whitespace-nowrap">
-                      {call.mobile}
+                      {maskPhoneNumber(call.mobile)}
                       <button className="bg-gradient-to-t from-lime-600 to-lime-400 h-6 w-6 rounded-sm p-1 ml-2">
                         <i className="bx bxs-phone text-white text-center"></i>
                       </button>

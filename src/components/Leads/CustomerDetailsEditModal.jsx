@@ -3,6 +3,7 @@ import PersonalDetails from "./PersonalDetails";
 import EmployeeDetails from "./EmployeeDetails";
 import AddressDetails from "./AddressDetails";
 import BankDetails from "./BankDetails";
+import { maskPhoneNumber } from "@/lib/masking";
 
 const tabs = ["personal", "employment", "address", "bank"];
 const label = {
@@ -57,7 +58,7 @@ const CustomerDetailsEditModal = ({
           </div>
           <div>
             <strong>Mobile Number:</strong>
-            <p>{customer?.phone_number || ""}</p>
+            <p>{maskPhoneNumber(customer?.phone_number) || ""}</p>
           </div>
         </div>
 

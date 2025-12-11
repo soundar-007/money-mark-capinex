@@ -3,6 +3,7 @@ import InputFloating from "@/components/InputFloating";
 import Loader from "@/components/Loader";
 import Spinner from "@/components/Spinner";
 import { useConnectors, useCreateConnector } from "@/hooks/useConnectors";
+import { maskPhoneNumber } from "@/lib/masking";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -68,7 +69,7 @@ function ConnectorPage() {
                 <td className="px-2 py-3 uppercase font-semibold">
                   {item.name}
                 </td>
-                <td className="px-2 py-1 font-semibold ">{item.mobile_number}</td>
+                <td className="px-2 py-1 font-semibold ">{maskPhoneNumber(item.mobile_number)}</td>
               </tr>
             ))}
           </tbody>
